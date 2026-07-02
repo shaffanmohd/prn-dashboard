@@ -51,32 +51,52 @@ export function isBoundaryChangeEvent(
   return !("election_name" in item);
 }
 
-// GET /results
-export interface BallotEntry {
+// headline_ballots_state_jhr.csv — 1,482 rows × 20 cols
+export interface HeadlineBallotRow {
+  date: string; // "12 Mar 2022"
+  election: string; // "SE-15"
+  state: string; // "Johor"
+  seat: string; // "N.15 Maharani, Johor
+  ballot_order: number;
+  candidate_uid: string; // "56Y9M"
   name: string;
-  party_uid: string;
+  name_on_ballot: string;
+  sex: "m" | "f";
+  ethnicity:
+    | "malay"
+    | "chinese"
+    | "indian"
+    | "sabah_bumiputera"
+    | "sarawak_bumiputera"
+    | "other";
+  age: number;
   party: string;
-  coalition_uid: number;
+  party_uid: string;
   coalition: string;
+  coalition_uid: number;
   votes: number;
   votes_perc: number | null;
+  rank: number; // finishing position
   result: ContestResultStatus;
 }
 
-export interface ContestStats {
+// headline_stats_state_jhr.csv — 624 rows × 15 cols
+export interface HeadlineStatsRow {
   date: string;
+  election: string;
+  state: string;
+  seat: string;
   voters_total: number;
-  voter_turnout: number;
-  voter_turnout_perc: number | null;
+  ballots_issued: number;
+  ballots_not_returned: number;
   votes_rejected: number;
-  votes_rejected_perc: number | null;
+  votes_valid: number;
   majority: number;
-  majority_perc: number | null;
-}
-
-export interface ContestResult {
-  ballot: BallotEntry[];
-  stats: ContestStats[];
+  n_candidates: number;
+  voter_turnout: number; // this is the % already
+  majority_perc: number;
+  votes_rejected_perc: number;
+  ballots_not_returned_perc: number;
 }
 
 // GET /candidates/dropdown
@@ -142,26 +162,14 @@ export interface SaluranSummary {
   }[];
 }
 
-// ─── OpenDOSM demography (manually matched to seat) ──────────────────────────
-export interface SeatDemography {
-  district: string;
-  population: number;
-  ethnicity: {
-    malay: number;
-    chinese: number;
-    indian: number;
-    other: number;
-  };
-  medianAge: number;
-  medianIncome?: number;
-}
-
 // ─── Live panel state ─────────────────────────────────────────────────────────
 export interface LiveState {
   status: PollingDayStatus;
-  lastUpdated: string | null; // ISO timestamp
+  lastUpdated: string | null;
   saluransReported: number;
   saluransTotal: number;
-  contest: ContestResult | null;
-  swing2022: number | null; // percentage point swing vs 2022 winner
+  dmsTotal: number;
+  ballot: HeadlineBallotRow[]; // live ballot rows for this seat
+  stats: HeadlineStatsRow | null; // live stats row for this seat
+  swing2022: number | null;
 }
