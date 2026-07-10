@@ -15,9 +15,13 @@ import {
   MOCK_SALURAN,
   MOCK_LIVE,
 } from "@/data/mock";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Shield } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
   const [slug, setSlug] = useState("n15-maharani-johor");
+  const router = useRouter();
 
   const seatName = MOCK_SEATS.find((s) => s.slug === slug)?.seat ?? "";
 
@@ -46,6 +50,23 @@ export default function DashboardPage() {
             <SeatHistoryCard ballots={seatBallots} stats={seatStats} />
             <CandidatesCard ballots={seatBallots} />
           </div>
+          <Card
+            className="cursor-pointer hover:shadow-md transition-shadow border-dashed"
+            onClick={() => router.push(`/dashboard/${slug}/ground-ops`)}
+          >
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-muted-foreground" />
+                  Ground ops — internal
+                </CardTitle>
+                <span className="text-xs text-blue-600">View →</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Live saluran tracker · powered by Notion
+              </p>
+            </CardHeader>
+          </Card>
           <SaluranCard rows={saluran} />
         </div>
       </main>
