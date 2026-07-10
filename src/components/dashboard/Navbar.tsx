@@ -11,7 +11,7 @@ export function Navbar() {
           </span>
         </div>
         <span className="text-xs text-muted-foreground">
-          Powered by ElectionData.MY
+          By SM
         </span>
       </div>
     </header>

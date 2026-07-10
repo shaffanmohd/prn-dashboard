@@ -43,13 +43,13 @@ export default function DashboardPage() {
       <Navbar />
       <main className="min-h-screen bg-background">
         <div className="max-w-5xl mx-auto px-4 py-6 space-y-4">
-          <SeatPicker seats={MOCK_SEATS} selected={slug} onChange={setSlug} />
+          {/* <SeatPicker seats={MOCK_SEATS} selected={slug} onChange={setSlug} />
           <LivePanel slug={slug} live={live} />
           <StatCards stats={latestStats} winner={latestWinner} />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <SeatHistoryCard ballots={seatBallots} stats={seatStats} />
             <CandidatesCard ballots={seatBallots} />
-          </div>
+          </div> */}
           <Card
             className="cursor-pointer hover:shadow-md transition-shadow border-dashed"
             onClick={() => router.push(`/dashboard/${slug}/ground-ops`)}
@@ -58,16 +58,16 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <Shield className="h-4 w-4 text-muted-foreground" />
-                  Ground ops — internal
+                  N.15 Maharani tracker
                 </CardTitle>
                 <span className="text-xs text-blue-600">View →</span>
               </div>
               <p className="text-xs text-muted-foreground">
-                Live saluran tracker · powered by Notion
+                Live saluran tracker
               </p>
             </CardHeader>
           </Card>
-          <SaluranCard rows={saluran} />
+          {/* <SaluranCard rows={saluran} /> */}
         </div>
       </main>
     </>
