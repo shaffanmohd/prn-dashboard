@@ -1,3 +1,5 @@
+import { Era } from "@/types/research";
+
 export const COALITION_COLORS: Record<string, string> = {
   PH: "bg-red-500",
   BN: "bg-blue-600",
@@ -63,3 +65,8 @@ export function getPartyColor(party: string): string {
 export function getPartyBg(party: string): string {
   return PARTY_BG_COLORS[party] ?? "bg-gray-100 text-gray-600";
 }
+
+export const ERA_COLORS: Record<Era, string> = {
+  pact: "#2E5266",
+  solo: "#C6672B",
+};

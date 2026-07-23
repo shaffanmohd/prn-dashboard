@@ -67,6 +67,24 @@ export default function DashboardPage() {
               </p>
             </CardHeader>
           </Card>
+
+            <Card
+            className="cursor-pointer hover:shadow-md transition-shadow border-dashed"
+            onClick={() => router.push(`/research`)}
+          >
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-muted-foreground" />
+                  Research
+                </CardTitle>
+                <span className="text-xs text-blue-600">View →</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Breakdown of MUDA performance by pact vs solo, youth targeting, racial shift, and KL seat screening
+              </p>
+            </CardHeader>
+          </Card>
           {/* <SaluranCard rows={saluran} /> */}
         </div>
       </main>

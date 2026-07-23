@@ -1,0 +1,362 @@
+[
+  {
+    "date": "2022-03-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Johor",
+    "seat": "N.50 Bukit Permai",
+    "coalition": "ALONE",
+    "voteShare": 27.242849529223662,
+    "result": "lost",
+    "era": "pact"
+  },
+  {
+    "date": "2022-03-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Johor",
+    "seat": "N.44 Larkin",
+    "coalition": "ALONE",
+    "voteShare": 12.87435276975516,
+    "result": "lost",
+    "era": "solo"
+  },
+  {
+    "date": "2022-03-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Johor",
+    "seat": "N.41 Puteri Wangsa",
+    "coalition": "ALONE",
+    "voteShare": 43.21976278612979,
+    "result": "won",
+    "era": "pact"
+  },
+  {
+    "date": "2022-03-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Johor",
+    "seat": "N.26 Machap",
+    "coalition": "ALONE",
+    "voteShare": 17.937657269039182,
+    "result": "lost",
+    "era": "pact"
+  },
+  {
+    "date": "2022-03-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Johor",
+    "seat": "N.22 Parit Raja",
+    "coalition": "ALONE",
+    "voteShare": 18.14749207533097,
+    "result": "lost",
+    "era": "pact"
+  },
+  {
+    "date": "2022-03-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Johor",
+    "seat": "N.07 Bukit Kepong",
+    "coalition": "ALONE",
+    "voteShare": 13.791866565036093,
+    "result": "lost",
+    "era": "pact"
+  },
+  {
+    "date": "2022-03-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Johor",
+    "seat": "N.05 Tenang",
+    "coalition": "ALONE",
+    "voteShare": 30.424981213993483,
+    "result": "lost",
+    "era": "pact"
+  },
+  {
+    "date": "2022-11-19T00:00:00.000Z",
+    "election": "GE-15",
+    "state": "Pulau Pinang",
+    "seat": "P.041 Kepala Batas",
+    "coalition": "PH",
+    "voteShare": 20.510230584975904,
+    "result": "lost",
+    "era": "pact"
+  },
+  {
+    "date": "2022-11-19T00:00:00.000Z",
+    "election": "GE-15",
+    "state": "Selangor",
+    "seat": "P.095 Tanjong Karang",
+    "coalition": "PH",
+    "voteShare": 24.048432770237284,
+    "result": "lost",
+    "era": "pact"
+  },
+  {
+    "date": "2022-11-19T00:00:00.000Z",
+    "election": "GE-15",
+    "state": "Melaka",
+    "seat": "P.134 Masjid Tanah",
+    "coalition": "PH",
+    "voteShare": 13.598421888984275,
+    "result": "lost",
+    "era": "pact"
+  },
+  {
+    "date": "2022-11-19T00:00:00.000Z",
+    "election": "GE-15",
+    "state": "Johor",
+    "seat": "P.146 Muar",
+    "coalition": "PH",
+    "voteShare": 37.550321682531326,
+    "result": "won",
+    "era": "pact"
+  },
+  {
+    "date": "2022-11-19T00:00:00.000Z",
+    "election": "GE-15",
+    "state": "Johor",
+    "seat": "P.165 Tanjung Piai",
+    "coalition": "PH",
+    "voteShare": 31.5692093500403,
+    "result": "lost",
+    "era": "pact"
+  },
+  {
+    "date": "2022-11-19T00:00:00.000Z",
+    "election": "GE-15",
+    "state": "Sabah",
+    "seat": "P.168 Kota Marudu",
+    "coalition": "PH",
+    "voteShare": 6.456973531413928,
+    "result": "lost_deposit",
+    "era": "pact"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Selangor",
+    "seat": "N.34 Bukit Gasing",
+    "coalition": "ALONE",
+    "voteShare": 4.228522754928207,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Selangor",
+    "seat": "N.21 Pandan Indah",
+    "coalition": "ALONE",
+    "voteShare": 2.5074190357403983,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Selangor",
+    "seat": "N.23 Dusun Tua",
+    "coalition": "ALONE",
+    "voteShare": 5.80158937432377,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Selangor",
+    "seat": "N.29 Seri Serdang",
+    "coalition": "ALONE",
+    "voteShare": 2.782835639718378,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Selangor",
+    "seat": "N.31 Subang Jaya",
+    "coalition": "ALONE",
+    "voteShare": 6.392860027461433,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Selangor",
+    "seat": "N.32 Seri Setia",
+    "coalition": "ALONE",
+    "voteShare": 2.447117378681045,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Selangor",
+    "seat": "N.36 Bandar Utama",
+    "coalition": "ALONE",
+    "voteShare": 5.34017971758665,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Selangor",
+    "seat": "N.40 Kota Anggerik",
+    "coalition": "ALONE",
+    "voteShare": 3.827632861486536,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Selangor",
+    "seat": "N.41 Batu Tiga",
+    "coalition": "ALONE",
+    "voteShare": 3.367811628481661,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Selangor",
+    "seat": "N.48 Sentosa",
+    "coalition": "ALONE",
+    "voteShare": 3.6058501361564117,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Selangor",
+    "seat": "N.49 Sungai Kandis",
+    "coalition": "ALONE",
+    "voteShare": 2.271880188391556,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Negeri Sembilan",
+    "seat": "N.12 Temiang",
+    "coalition": "ALONE",
+    "voteShare": 7.11743772241993,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Pulau Pinang",
+    "seat": "N.16 Perai",
+    "coalition": "ALONE",
+    "voteShare": 1.8184431826349459,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Selangor",
+    "seat": "N.19 Bukit Antarabangsa",
+    "coalition": "ALONE",
+    "voteShare": 3.12887899670419,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Selangor",
+    "seat": "N.15 Taman Templer",
+    "coalition": "ALONE",
+    "voteShare": 1.7078942668333632,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Selangor",
+    "seat": "N.06 Kuala Kubu Baharu",
+    "coalition": "ALONE",
+    "voteShare": 4.341459843326744,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Pulau Pinang",
+    "seat": "N.36 Pantai Jerejak",
+    "coalition": "ALONE",
+    "voteShare": 2.338601793588664,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Pulau Pinang",
+    "seat": "N.35 Batu Uban",
+    "coalition": "ALONE",
+    "voteShare": 2.70908538848217,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2023-08-12T00:00:00.000Z",
+    "election": "SE-15",
+    "state": "Terengganu",
+    "seat": "N.14 Bandar",
+    "coalition": "ALONE",
+    "voteShare": 2.49932813759742,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2026-07-11T00:00:00.000Z",
+    "election": "SE-16",
+    "state": "Johor",
+    "seat": "N.13 Simpang Jeram",
+    "coalition": "ALONE",
+    "voteShare": 5.006313346756305,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2026-07-11T00:00:00.000Z",
+    "election": "SE-16",
+    "state": "Johor",
+    "seat": "N.15 Maharani",
+    "coalition": "ALONE",
+    "voteShare": 9.189686924493556,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2026-07-11T00:00:00.000Z",
+    "election": "SE-16",
+    "state": "Johor",
+    "seat": "N.41 Puteri Wangsa",
+    "coalition": "ALONE",
+    "voteShare": 6.818076531084963,
+    "result": "lost_deposit",
+    "era": "solo"
+  },
+  {
+    "date": "2026-07-11T00:00:00.000Z",
+    "election": "SE-16",
+    "state": "Johor",
+    "seat": "N.51 Bukit Batu",
+    "coalition": "ALONE",
+    "voteShare": 1.0922638367531257,
+    "result": "lost_deposit",
+    "era": "solo"
+  }
+]
