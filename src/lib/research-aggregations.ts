@@ -108,3 +108,70 @@ export function computeRaceCorrelation(
     };
   });
 }
+export interface SeatSaluranBreakdown {
+  era: string;
+  seat: string;
+  totalSaluran: number;
+  pureYouthCount: number;
+  mixedCount: number;
+  regularCount: number;
+  pctPureYouth: number;
+}
+
+export interface EraSaluranSummary {
+  era: string;
+  totalSaluran: number;
+  totalPureYouth: number;
+  pctPureYouth: number;
+}
+
+export function computeSeatSaluranBreakdown(
+  rows: SaluranRawRow[],
+): SeatSaluranBreakdown[] {
+  const key = (r: SaluranRawRow) => `${r.era}|||${r.seat}`;
+  const groups = new Map<string, SaluranRawRow[]>();
+  for (const r of rows) {
+    const k = key(r);
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k)!.push(r);
+  }
+
+  return Array.from(groups.entries())
+    .map(([k, seatRows]) => {
+      const [era, seat] = k.split("|||");
+      const totalSaluran = seatRows.length;
+      const pureYouthCount = seatRows.filter((r) => r.pct_youth >= 90).length;
+      return {
+        era,
+        seat,
+        totalSaluran,
+        pureYouthCount,
+        regularCount: seatRows.filter((r) => r.pct_youth <= 10).length,
+        mixedCount: seatRows.filter((r) => r.pct_youth > 10 && r.pct_youth < 90)
+          .length,
+        pctPureYouth: totalSaluran
+          ? Number(((pureYouthCount / totalSaluran) * 100).toFixed(1))
+          : 0,
+      };
+    })
+    .sort((a, b) => a.era.localeCompare(b.era) || a.seat.localeCompare(b.seat));
+}
+
+export function computeEraSaluranSummary(
+  breakdown: SeatSaluranBreakdown[],
+): EraSaluranSummary[] {
+  const eras = [...new Set(breakdown.map((b) => b.era))];
+  return eras.map((era) => {
+    const rows = breakdown.filter((b) => b.era === era);
+    const totalSaluran = rows.reduce((sum, r) => sum + r.totalSaluran, 0);
+    const totalPureYouth = rows.reduce((sum, r) => sum + r.pureYouthCount, 0);
+    return {
+      era,
+      totalSaluran,
+      totalPureYouth,
+      pctPureYouth: totalSaluran
+        ? Number(((totalPureYouth / totalSaluran) * 100).toFixed(1))
+        : 0,
+    };
+  });
+}
