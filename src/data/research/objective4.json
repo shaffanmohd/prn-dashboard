@@ -1,62 +1,32 @@
 [
   {
     "election": "GE-15",
+    "seat": "P.119 Titiwangsa",
+    "votersTotal": 80747,
+    "pctChinese": 16.4,
+    "pctMalay": 66.6,
+    "pctIndian": 9.2,
+    "marginPerc": 7.611160406191463,
+    "winningCoalition": "BN"
+  },
+  {
+    "election": "GE-15",
+    "seat": "P.114 Kepong",
+    "votersTotal": 94285,
+    "pctChinese": 85.4,
+    "pctMalay": 5.7,
+    "pctIndian": 7.1,
+    "marginPerc": 84.46051521730112,
+    "winningCoalition": "PH"
+  },
+  {
+    "election": "GE-15",
     "seat": "P.118 Setiawangsa",
     "votersTotal": 95753,
     "pctChinese": 24.5,
     "pctMalay": 60.6,
     "pctIndian": 11.7,
     "marginPerc": 16.269862500668772,
-    "winningCoalition": "PH"
-  },
-  {
-    "election": "GE-15",
-    "seat": "P.116 Wangsa Maju",
-    "votersTotal": 120323,
-    "pctChinese": 28.5,
-    "pctMalay": 57.8,
-    "pctIndian": 9.1,
-    "marginPerc": 22.3161526849256,
-    "winningCoalition": "PH"
-  },
-  {
-    "election": "GE-15",
-    "seat": "P.117 Segambut",
-    "votersTotal": 119652,
-    "pctChinese": 56.8,
-    "pctMalay": 26.9,
-    "pctIndian": 11.7,
-    "marginPerc": 69.8091138766726,
-    "winningCoalition": "PH"
-  },
-  {
-    "election": "GE-15",
-    "seat": "P.120 Bukit Bintang",
-    "votersTotal": 79782,
-    "pctChinese": 71.6,
-    "pctMalay": 13.2,
-    "pctIndian": 12.4,
-    "marginPerc": 73.63042164122714,
-    "winningCoalition": "PH"
-  },
-  {
-    "election": "GE-15",
-    "seat": "P.121 Lembah Pantai",
-    "votersTotal": 101828,
-    "pctChinese": 19.1,
-    "pctMalay": 59.3,
-    "pctIndian": 17.1,
-    "marginPerc": 18.134890632739786,
-    "winningCoalition": "PH"
-  },
-  {
-    "election": "GE-15",
-    "seat": "P.115 Batu",
-    "votersTotal": 113863,
-    "pctChinese": 34.5,
-    "pctMalay": 44.2,
-    "pctIndian": 18.1,
-    "marginPerc": 25.521538567461498,
     "winningCoalition": "PH"
   },
   {
@@ -81,23 +51,53 @@
   },
   {
     "election": "GE-15",
-    "seat": "P.114 Kepong",
-    "votersTotal": 94285,
-    "pctChinese": 85.4,
-    "pctMalay": 5.7,
-    "pctIndian": 7.1,
-    "marginPerc": 84.46051521730112,
+    "seat": "P.120 Bukit Bintang",
+    "votersTotal": 79782,
+    "pctChinese": 71.6,
+    "pctMalay": 13.2,
+    "pctIndian": 12.4,
+    "marginPerc": 73.63042164122714,
     "winningCoalition": "PH"
   },
   {
     "election": "GE-15",
-    "seat": "P.119 Titiwangsa",
-    "votersTotal": 80747,
-    "pctChinese": 16.4,
-    "pctMalay": 66.6,
-    "pctIndian": 9.2,
-    "marginPerc": 7.611160406191463,
-    "winningCoalition": "BN"
+    "seat": "P.121 Lembah Pantai",
+    "votersTotal": 101828,
+    "pctChinese": 19.1,
+    "pctMalay": 59.3,
+    "pctIndian": 17.1,
+    "marginPerc": 18.134890632739786,
+    "winningCoalition": "PH"
+  },
+  {
+    "election": "GE-15",
+    "seat": "P.117 Segambut",
+    "votersTotal": 119652,
+    "pctChinese": 56.8,
+    "pctMalay": 26.9,
+    "pctIndian": 11.7,
+    "marginPerc": 69.8091138766726,
+    "winningCoalition": "PH"
+  },
+  {
+    "election": "GE-15",
+    "seat": "P.115 Batu",
+    "votersTotal": 113863,
+    "pctChinese": 34.5,
+    "pctMalay": 44.2,
+    "pctIndian": 18.1,
+    "marginPerc": 25.521538567461498,
+    "winningCoalition": "PH"
+  },
+  {
+    "election": "GE-15",
+    "seat": "P.116 Wangsa Maju",
+    "votersTotal": 120323,
+    "pctChinese": 28.5,
+    "pctMalay": 57.8,
+    "pctIndian": 9.1,
+    "marginPerc": 22.3161526849256,
+    "winningCoalition": "PH"
   },
   {
     "election": "GE-15",

@@ -88,19 +88,25 @@ async function main() {
         COUNT(*) FILTER (WHERE ethnicity = 'Malay') * 100.0 / COUNT(*) AS pct_malay,
         COUNT(*) FILTER (WHERE ethnicity = 'Chinese') * 100.0 / COUNT(*) AS pct_chinese
       FROM read_parquet('${LAKE}/voter_rolls/ge15_2022.parquet')
-      WHERE parlimen IN ('P.146 Muar', 'P.165 Tanjung Piai') AND dm NOT LIKE '%/UP%'
+      WHERE parlimen IN (
+        SELECT seat FROM read_parquet('${LAKE}/results_headline/headline_ballots.parquet')
+        WHERE party_uid = '120-MUDA' AND election = 'GE-15'
+      ) AND dm NOT LIKE '%/UP%'
       GROUP BY dm, pm, saluran, parlimen
 
       UNION ALL
 
-      SELECT dm, pm, saluran, dun AS seat, 'Pact - JHR SE15' AS era,
+      SELECT dm, pm, saluran, dun AS seat,
+        CASE WHEN dun = 'N.44 Larkin' THEN 'Solo - Larkin SE15' ELSE 'Pact - JHR SE15' END AS era,
         COUNT(*) AS voters,
         COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 18 AND 30) * 100.0 / COUNT(*) AS pct_youth,
         COUNT(*) FILTER (WHERE ethnicity = 'Malay') * 100.0 / COUNT(*) AS pct_malay,
         COUNT(*) FILTER (WHERE ethnicity = 'Chinese') * 100.0 / COUNT(*) AS pct_chinese
       FROM read_parquet('${LAKE}/voter_rolls/jhr_se15_2022.parquet')
-      WHERE dun IN ('N.05 Tenang','N.07 Bukit Kepong','N.22 Parit Raja','N.26 Machap','N.41 Puteri Wangsa','N.50 Bukit Permai')
-        AND dm NOT LIKE '%/UP%'
+      WHERE dun IN (
+        SELECT seat FROM read_parquet('${LAKE}/results_headline/headline_ballots.parquet')
+        WHERE party_uid = '120-MUDA' AND election = 'SE-15' AND state = 'Johor'
+      ) AND dm NOT LIKE '%/UP%'
       GROUP BY dm, pm, saluran, dun
 
       UNION ALL
@@ -111,7 +117,10 @@ async function main() {
         COUNT(*) FILTER (WHERE ethnicity = 'Malay') * 100.0 / COUNT(*) AS pct_malay,
         COUNT(*) FILTER (WHERE ethnicity = 'Chinese') * 100.0 / COUNT(*) AS pct_chinese
       FROM read_parquet('${LAKE}/voter_rolls/nsn_se15_2023.parquet')
-      WHERE dun = 'N.12 Temiang' AND dm NOT LIKE '%/UP%'
+      WHERE dun IN (
+        SELECT seat FROM read_parquet('${LAKE}/results_headline/headline_ballots.parquet')
+        WHERE party_uid = '120-MUDA' AND election = 'SE-15' AND state = 'Negeri Sembilan'
+      ) AND dm NOT LIKE '%/UP%'
       GROUP BY dm, pm, saluran, dun
     ),
     saluran_muda AS (
