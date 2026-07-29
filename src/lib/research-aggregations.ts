@@ -114,35 +114,6 @@ export interface RankedSaluran {
   mudaVotes: number;
 }
 
-export function computeRankedSaluran(
-  rows: SaluranRawRow[],
-  topN = 10,
-): RankedSaluran[] {
-  const eras = [...new Set(rows.map((r) => r.era))];
-  const result: RankedSaluran[] = [];
-  for (const era of eras) {
-    const eraRows = rows
-      .filter((r) => r.era === era)
-      .slice()
-      .sort((a, b) => b.muda_vote_share - a.muda_vote_share)
-      .slice(0, topN);
-    for (const r of eraRows) {
-      result.push({
-        era: r.era,
-        seat: r.seat,
-        dm: r.dm,
-        pm: r.pm,
-        saluran: Number(r.saluran),
-        voters: r.voters,
-        pctYouth: r.pct_youth,
-        mudaVoteShare: r.muda_vote_share,
-        mudaVotes: r.muda_votes,
-      });
-    }
-  }
-  return result;
-}
-
 export interface YouthScatterPoint {
   era: string;
   pctYouth: number;
@@ -181,6 +152,43 @@ export function computeYouthCorrelation(
           eraRows.map((r) => r.muda_vote_share),
         ).toFixed(2),
       ),
+    };
+  });
+}
+export interface EraTopSummary {
+  era: string;
+  topNAvg: number;
+  bestSeat: string;
+  bestVoteShare: number;
+  bestPctYouth: number;
+  totalSaluran: number;
+}
+
+export function computeEraTopSummary(
+  rows: SaluranRawRow[],
+  topN = 10,
+): EraTopSummary[] {
+  const eras = [...new Set(rows.map((r) => r.era))];
+  return eras.map((era) => {
+    const eraRows = rows
+      .filter((r) => r.era === era)
+      .slice()
+      .sort((a, b) => b.muda_vote_share - a.muda_vote_share);
+    const top = eraRows.slice(0, topN);
+    const best = eraRows[0];
+    return {
+      era,
+      topNAvg: top.length
+        ? Number(
+            (
+              top.reduce((s, r) => s + r.muda_vote_share, 0) / top.length
+            ).toFixed(1),
+          )
+        : 0,
+      bestSeat: best ? `${best.seat} — ${best.dm} #${best.saluran}` : "—",
+      bestVoteShare: best ? Number(best.muda_vote_share.toFixed(1)) : 0,
+      bestPctYouth: best ? Number(best.pct_youth.toFixed(0)) : 0,
+      totalSaluran: eraRows.length,
     };
   });
 }
