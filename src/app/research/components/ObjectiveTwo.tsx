@@ -5,10 +5,7 @@ import { useMemo, useState } from "react";
 import saluranRawData from "@/data/research/saluran-raw.json";
 
 import {
-  Bar,
-  BarChart,
   CartesianGrid,
-  Cell,
   Legend,
   ResponsiveContainer,
   Scatter,
@@ -401,7 +398,7 @@ export default function ObjectiveTwo() {
                   <th className="py-2 pr-3">Best saluran</th>
                   <th className="py-2 pr-3 text-right">Best vote share</th>
                   <th className="py-2 pr-3 text-right">
-                    Best saluran's % youth
+                    Best salurans % youth
                   </th>
                 </tr>
               </thead>

@@ -192,3 +192,34 @@ export function computeEraTopSummary(
     };
   });
 }
+
+export interface RaceByEraRow {
+  era: string;
+  chinese: number | null;
+  malay: number | null;
+  indian: number | null;
+}
+
+export function computeRaceByEra(rows: SaluranRawRow[]): RaceByEraRow[] {
+  const eras = [...new Set(rows.map((r) => r.era))];
+  return eras.map((era) => {
+    const eraRows = rows.filter((r) => r.era === era);
+    const chinese = eraRows.filter((r) => r.pct_chinese >= 40);
+    const malay = eraRows.filter((r) => r.pct_malay >= 60);
+    const wavg = (bucket: SaluranRawRow[]) =>
+      bucket.length
+        ? Number(
+            (
+              bucket.reduce((s, r) => s + r.muda_vote_share * r.voters, 0) /
+              bucket.reduce((s, r) => s + r.voters, 0)
+            ).toFixed(1),
+          )
+        : null;
+    return {
+      era,
+      chinese: wavg(chinese),
+      malay: wavg(malay),
+      indian: null, // add an indian bucket threshold here if/when you want it broken out
+    };
+  });
+}
