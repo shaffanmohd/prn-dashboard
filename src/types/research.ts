@@ -21,6 +21,7 @@ export interface SaluranRawRow {
   pct_youth: number;
   pct_malay: number;
   pct_chinese: number;
+  pct_indian: number;
   muda_votes: number;
   muda_vote_share: number;
 }
@@ -41,6 +42,7 @@ export interface RaceCorrelation {
   era: string;
   corrMalay: number;
   corrChinese: number;
+  corrIndian: number; 
 }
 
 export interface KLSeatScreen {

@@ -99,6 +99,12 @@ export function computeRaceCorrelation(
           eraRows.map((r) => r.muda_vote_share),
         ).toFixed(2),
       ),
+      corrIndian: Number(
+        pearsonCorr(
+          eraRows.map((r) => r.pct_indian),
+          eraRows.map((r) => r.muda_vote_share),
+        ).toFixed(2),
+      ),
     };
   });
 }
@@ -206,6 +212,7 @@ export function computeRaceByEra(rows: SaluranRawRow[]): RaceByEraRow[] {
     const eraRows = rows.filter((r) => r.era === era);
     const chinese = eraRows.filter((r) => r.pct_chinese >= 40);
     const malay = eraRows.filter((r) => r.pct_malay >= 60);
+    const indian = eraRows.filter((r) => r.pct_indian >= 15); // lower threshold — Indian-majority saluran are rare, 15%+ is already "significant"
     const wavg = (bucket: SaluranRawRow[]) =>
       bucket.length
         ? Number(
@@ -218,8 +225,30 @@ export function computeRaceByEra(rows: SaluranRawRow[]): RaceByEraRow[] {
     return {
       era,
       chinese: wavg(chinese),
-      malay: wavg(malay),
-      indian: null, // add an indian bucket threshold here if/when you want it broken out
+      malay: wavg(malay), 
+      indian: wavg(indian),
     };
   });
+}
+
+export interface RaceScatterPoint {
+  era: string;
+  seat: string;
+  voters: number;
+  pctMalay: number;
+  pctChinese: number;
+  pctIndian: number; // new
+  mudaVoteShare: number;
+}
+
+export function computeRaceScatter(rows: SaluranRawRow[]): RaceScatterPoint[] {
+  return rows.map((r) => ({
+    era: r.era,
+    seat: r.seat,
+    voters: r.voters,
+    pctMalay: r.pct_malay,
+    pctChinese: r.pct_chinese,
+    pctIndian: r.pct_indian,
+    mudaVoteShare: r.muda_vote_share,
+  }));
 }

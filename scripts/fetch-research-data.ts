@@ -86,7 +86,8 @@ async function main() {
         COUNT(*) AS voters,
         COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 18 AND 30) * 100.0 / COUNT(*) AS pct_youth,
         COUNT(*) FILTER (WHERE ethnicity = 'Malay') * 100.0 / COUNT(*) AS pct_malay,
-        COUNT(*) FILTER (WHERE ethnicity = 'Chinese') * 100.0 / COUNT(*) AS pct_chinese
+        COUNT(*) FILTER (WHERE ethnicity = 'Chinese') * 100.0 / COUNT(*) AS pct_chinese,
+        COUNT(*) FILTER (WHERE ethnicity = 'Indian') * 100.0 / COUNT(*) AS pct_indian
       FROM read_parquet('${LAKE}/voter_rolls/ge15_2022.parquet')
       WHERE parlimen IN (
         SELECT seat FROM read_parquet('${LAKE}/results_headline/headline_ballots.parquet')
@@ -101,7 +102,8 @@ async function main() {
         COUNT(*) AS voters,
         COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 18 AND 30) * 100.0 / COUNT(*) AS pct_youth,
         COUNT(*) FILTER (WHERE ethnicity = 'Malay') * 100.0 / COUNT(*) AS pct_malay,
-        COUNT(*) FILTER (WHERE ethnicity = 'Chinese') * 100.0 / COUNT(*) AS pct_chinese
+        COUNT(*) FILTER (WHERE ethnicity = 'Chinese') * 100.0 / COUNT(*) AS pct_chinese,
+        COUNT(*) FILTER (WHERE ethnicity = 'Indian') * 100.0 / COUNT(*) AS pct_indian
       FROM read_parquet('${LAKE}/voter_rolls/jhr_se15_2022.parquet')
       WHERE dun IN (
         SELECT seat FROM read_parquet('${LAKE}/results_headline/headline_ballots.parquet')
@@ -115,7 +117,8 @@ async function main() {
         COUNT(*) AS voters,
         COUNT(*) FILTER (WHERE (2023 - birth_year) BETWEEN 18 AND 30) * 100.0 / COUNT(*) AS pct_youth,
         COUNT(*) FILTER (WHERE ethnicity = 'Malay') * 100.0 / COUNT(*) AS pct_malay,
-        COUNT(*) FILTER (WHERE ethnicity = 'Chinese') * 100.0 / COUNT(*) AS pct_chinese
+        COUNT(*) FILTER (WHERE ethnicity = 'Chinese') * 100.0 / COUNT(*) AS pct_chinese,
+        COUNT(*) FILTER (WHERE ethnicity = 'Indian') * 100.0 / COUNT(*) AS pct_indian
       FROM read_parquet('${LAKE}/voter_rolls/nsn_se15_2023.parquet')
       WHERE dun IN (
         SELECT seat FROM read_parquet('${LAKE}/results_headline/headline_ballots.parquet')
@@ -137,7 +140,7 @@ async function main() {
       WHERE party_uid = '120-MUDA'
     )
     SELECT d.era, d.seat, d.dm, d.pm, d.saluran, d.voters,
-           d.pct_youth, d.pct_malay, d.pct_chinese,
+           d.pct_youth, d.pct_malay, d.pct_chinese, d.pct_indian,
            v.votes AS muda_votes, v.votes_perc AS muda_vote_share
     FROM voter_agg d
     JOIN saluran_muda v ON d.dm = v.dm AND d.pm = v.pm AND d.saluran = v.saluran AND d.seat = v.seat
