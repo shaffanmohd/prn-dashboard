@@ -125,25 +125,52 @@ async function main() {
         WHERE party_uid = '120-MUDA' AND election = 'SE-15' AND state = 'Negeri Sembilan'
       ) AND dm NOT LIKE '%/UP%'
       GROUP BY dm, pm, saluran, dun
+
+      UNION ALL
+
+      SELECT dm, pm, saluran, dun AS seat, 'Solo - JHR SE16' AS era,
+        COUNT(*) AS voters,
+        COUNT(*) FILTER (WHERE (2026 - birth_year) BETWEEN 18 AND 30) * 100.0 / COUNT(*) AS pct_youth,
+        COUNT(*) FILTER (WHERE ethnicity = 'Malay') * 100.0 / COUNT(*) AS pct_malay,
+        COUNT(*) FILTER (WHERE ethnicity = 'Chinese') * 100.0 / COUNT(*) AS pct_chinese,
+        COUNT(*) FILTER (WHERE ethnicity = 'Indian') * 100.0 / COUNT(*) AS pct_indian
+      FROM read_parquet('${LAKE}/voter_rolls/jhr_se16_2026.parquet')
+      WHERE dun IN (
+        SELECT seat FROM read_parquet('${LAKE}/results_headline/headline_ballots.parquet')
+        WHERE party_uid = '120-MUDA' AND election = 'SE-16' AND state = 'Johor'
+      ) AND dm NOT LIKE '%/UP%'
+      GROUP BY dm, pm, saluran, dun
     ),
     saluran_muda AS (
-      SELECT date, election, state, seat, dm, pm, saluran, votes, votes_perc
+      SELECT date, election, state, seat, dm, pm, saluran, votes, votes_perc, 'Pact - GE15' AS era
       FROM read_parquet('${LAKE}/results_saluran/ge15_ballots.parquet')
       WHERE party_uid = '120-MUDA'
+
       UNION ALL
-      SELECT date, election, state, seat, dm, pm, saluran, votes, votes_perc
+
+      SELECT date, election, state, seat, dm, pm, saluran, votes, votes_perc,
+        CASE WHEN seat = 'N.44 Larkin' THEN 'Solo - Larkin SE15' ELSE 'Pact - JHR SE15' END AS era
       FROM read_parquet('${LAKE}/results_saluran/jhr_se15_ballots.parquet')
       WHERE party_uid = '120-MUDA'
+
       UNION ALL
-      SELECT date, election, state, seat, dm, pm, saluran, votes, votes_perc
+
+      SELECT date, election, state, seat, dm, pm, saluran, votes, votes_perc, 'Solo - N9 SE15' AS era
       FROM read_parquet('${LAKE}/results_saluran/nsn_se15_ballots.parquet')
+      WHERE party_uid = '120-MUDA'
+
+      UNION ALL
+
+      SELECT date, election, state, seat, dm, pm, saluran, votes, votes_perc, 'Solo - JHR SE16' AS era
+      FROM read_parquet('${LAKE}/results_saluran/jhr_se16_ballots.parquet')
       WHERE party_uid = '120-MUDA'
     )
     SELECT d.era, d.seat, d.dm, d.pm, d.saluran, d.voters,
            d.pct_youth, d.pct_malay, d.pct_chinese, d.pct_indian,
            v.votes AS muda_votes, v.votes_perc AS muda_vote_share
     FROM voter_agg d
-    JOIN saluran_muda v ON d.dm = v.dm AND d.pm = v.pm AND d.saluran = v.saluran AND d.seat = v.seat
+    JOIN saluran_muda v
+      ON d.dm = v.dm AND d.pm = v.pm AND d.saluran = v.saluran AND d.seat = v.seat AND d.era = v.era
   `);
   fs.writeFileSync(`${outDir}/saluran-raw.json`, toJson(saluranDemo));
   console.log(`saluran-raw.json — ${saluranDemo.length} rows`);

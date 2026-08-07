@@ -483,6 +483,21 @@ export default function ObjectiveTwo() {
                 effects.
               </p>
             </div>
+            <div>
+              <p className="font-medium text-foreground mb-1">
+                3. What does the Puteri Wangsa same-seat comparison confirm?
+              </p>
+              <p className="text-muted-foreground">
+                Puteri Wangsa is the only seat with real before/after saluran
+                data — pact (2022) vs solo (2026), same physical polling
+                streams. The youth premium held in both eras (pact: 49.1%
+                youth-block vs 43.1% regular; solo: 8.2% vs 6.1%) — a modest,
+                consistent edge either way. But the overall collapse (44.4% →
+                6.8%, a 37.6pt drop) dwarfs that small youth signal. Youth
+                targeting is a minor factor next to whatever caused the
+                seat-wide crash.
+              </p>
+            </div>
           </div>
         </CardContent>
       </Card>

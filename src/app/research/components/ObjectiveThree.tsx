@@ -161,13 +161,10 @@ export default function ObjectiveThree() {
             <p className="text-muted-foreground">
               Under the pact (GE-15, JHR SE-15), MUDA&apos;s vote is
               overwhelmingly a Chinese-voter phenomenon — Chinese-majority
-              saluran gave MUDA 50-58% vs. 8-15% in Malay-majority saluran, and
-              this holds even at Larkin (solo, but still Chinese-leaning: +0.93
-              correlation) — meaning the Chinese-vote pattern isn&apos;t
-              actually about the pact itself, it&apos;s about MUDA&apos;s appeal
-              specifically in Chinese-heavy Johor seats regardless of coalition
-              status. The pattern only breaks at Temiang (N9, solo), where it
-              flips — Malay-majority saluran outperform Chinese ones there.
+              saluran gave MUDA 50-58% vs. 8-15% in Malay-majority saluran. Once
+              solo, that gap closes and softens across every Johor SE-16 seat
+              MUDA contested, with the racial lean shifting mildly toward
+              Malay-majority saluran instead.
             </p>
             <p className="text-muted-foreground">
               <strong className="text-foreground">
@@ -213,47 +210,40 @@ export default function ObjectiveThree() {
               />
             </BarChart>
           </ResponsiveContainer>
-          <p className="text-xs text-muted-foreground mt-4">
-            Each bar is a Pearson correlation coefficient (r) between a
-            saluran&apos;s racial composition and MUDA&apos;s vote share there —
-            using every saluran in that era, not just clearly majority-Chinese
-            or majority-Malay ones. +1 means the relationship is perfectly
-            consistent (more of that race = more MUDA vote, every time); 0 means
-            no relationship; −1 means perfectly inverse.
-          </p>
-
           <div className="mt-4 p-4 border rounded-md bg-muted/30 text-sm space-y-3">
             <p className="font-semibold text-foreground">Conclusion</p>
             <p className="text-muted-foreground">
-              The Chinese correlation is strongly positive in every pact and
-              Larkin-solo era (+0.93 to +0.95) — remarkably consistent
-              regardless of pact status, which confirms Chart 1: this isn&apos;t
-              a coincidence of a few outlier saluran, it&apos;s a strong,
-              reliable pattern across each entire seat. The Malay correlation
-              tells the more interesting story: strongly negative under the
-              Johor pact and at Larkin (−0.92 to −0.94), only weakly negative at
-              the GE-15 federal level (−0.23), and{" "}
               <strong className="text-foreground">
-                flips fully positive at Temiang
+                The strongest evidence in this entire analysis: Puteri Wangsa,
+                the same seat, pact (2022) vs solo (2026).
               </strong>{" "}
-              (+0.90) — the only era where being Malay-majority actually helped
-              MUDA rather than hurt it.
+              Under the pact, MUDA&apos;s vote there correlated at +0.95 with %
+              Chinese and −0.92 with % Malay — a Chinese-voter phenomenon, very
+              close to as strong as a correlation gets. In 2026, solo, in the
+              exact same polling streams, that relationship didn&apos;t just
+              weaken — it <strong className="text-foreground">reversed</strong>:
+              −0.53 with % Chinese, +0.54 with % Malay. This is the cleanest
+              possible confirmation that MUDA&apos;s pact-era Chinese support
+              was borrowed PH-coalition-transfer vote, not an organic MUDA base
+              — it didn&apos;t just shrink when the pact ended, it flipped
+              direction.
             </p>
             <p className="text-muted-foreground">
-              <strong className="text-foreground">
-                % Indian is weakly positive everywhere
-              </strong>{" "}
-              (+0.15 to +0.33) — nowhere near Chinese&apos;s near-perfect
-              consistency, but never negative either, in any era. That&apos;s a
-              meaningfully different shape from both other races: Chinese
-              support is strong but fragile (collapses without the pact), Malay
-              support is inconsistent and even inverts by seat, while Indian
-              support is small but stable — present as a mild tailwind in pact
-              and solo alike. If MUDA is looking for a base that doesn&apos;t
-              evaporate when coalition backing disappears, this is the closest
-              thing the data shows to one — though at 0.15-0.33 strength,
-              it&apos;s a tailwind, not a foundation to build a solo strategy on
-              by itself.
+              This pattern holds across the whole SE-16 Johor slate, not just
+              Puteri Wangsa: all 4 seats MUDA contested solo (Puteri Wangsa,
+              Simpang Jeram, Maharani, Bukit Batu) collapsed to 1-9% vote share,
+              and the era-wide correlation moved the same direction (corr
+              Chinese −0.28, corr Malay +0.29) — weaker in magnitude than Puteri
+              Wangsa alone since it&apos;s averaged across seats with different
+              demographics, but consistently pointing away from Chinese and
+              mildly toward Malay once solo.
+            </p>
+            <p className="text-muted-foreground">
+              % Indian remains weakly positive-to-neutral across every era
+              (+0.15 to +0.33 pact, −0.08 to +0.21 solo) — small and
+              inconsistent enough that, unlike Chinese support, it&apos;s hard
+              to call it either a borrowed-vote effect or a stable base. It just
+              never became a defining factor in either direction.
             </p>
           </div>
         </CardContent>
