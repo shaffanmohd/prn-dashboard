@@ -42,7 +42,7 @@ export interface RaceCorrelation {
   era: string;
   corrMalay: number;
   corrChinese: number;
-  corrIndian: number; 
+  corrIndian: number;
 }
 
 export interface KLSeatScreen {
@@ -52,6 +52,7 @@ export interface KLSeatScreen {
   pctChinese: number;
   pctMalay: number;
   pctIndian: number;
+  pctYouth: number;
   marginPerc: number | null;
   winningCoalition: string;
 }

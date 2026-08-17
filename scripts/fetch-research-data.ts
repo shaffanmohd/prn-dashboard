@@ -188,7 +188,8 @@ async function main() {
       COUNT(*) AS votersTotal,
       COUNT(*) FILTER (WHERE ethnicity = 'Chinese') * 100.0 / COUNT(*) AS pctChinese,
       COUNT(*) FILTER (WHERE ethnicity = 'Malay') * 100.0 / COUNT(*) AS pctMalay,
-      COUNT(*) FILTER (WHERE ethnicity = 'Indian') * 100.0 / COUNT(*) AS pctIndian
+      COUNT(*) FILTER (WHERE ethnicity = 'Indian') * 100.0 / COUNT(*) AS pctIndian,
+      COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 18 AND 30) * 100.0 / COUNT(*) AS pctYouth
     FROM read_parquet('${LAKE}/voter_rolls/ge15_2022.parquet')
     WHERE state = 'W.P. Kuala Lumpur' AND parlimen LIKE 'P.%'
     GROUP BY parlimen
@@ -200,6 +201,7 @@ async function main() {
     ROUND(d.pctChinese, 1) AS pctChinese,
     ROUND(d.pctMalay, 1) AS pctMalay,
     ROUND(d.pctIndian, 1) AS pctIndian,
+    ROUND(d.pctYouth, 1) AS pctYouth,
     s.majority_perc AS marginPerc,
     b.coalition AS winningCoalition
   FROM kl_demo d

@@ -225,7 +225,7 @@ export function computeRaceByEra(rows: SaluranRawRow[]): RaceByEraRow[] {
     return {
       era,
       chinese: wavg(chinese),
-      malay: wavg(malay), 
+      malay: wavg(malay),
       indian: wavg(indian),
     };
   });
@@ -251,4 +251,129 @@ export function computeRaceScatter(rows: SaluranRawRow[]): RaceScatterPoint[] {
     pctIndian: r.pct_indian,
     mudaVoteShare: r.muda_vote_share,
   }));
+}
+export interface SeatProfile {
+  seat: string;
+  era: string;
+  pctChinese: number;
+  pctMalay: number;
+  pctYouth: number;
+  voteShare: number;
+  result: string;
+}
+
+export function computeSeatProfiles(
+  rows: SaluranRawRow[],
+  objective1: {
+    seat: string;
+    era: string;
+    voteShare: number | null;
+    result: string;
+  }[],
+): SeatProfile[] {
+  const pactRows = rows.filter((r) => r.era.startsWith("Pact"));
+  const seats = [...new Set(pactRows.map((r) => r.seat))];
+
+  return seats
+    .map((seat) => {
+      const seatRows = pactRows.filter((r) => r.seat === seat);
+      const totalVoters = seatRows.reduce((s, r) => s + r.voters, 0);
+      const wavg = (key: "pct_chinese" | "pct_malay" | "pct_youth") =>
+        totalVoters
+          ? seatRows.reduce((s, r) => s + r[key] * r.voters, 0) / totalVoters
+          : 0;
+
+      const match = objective1.find((o) => o.seat === seat && o.era === "pact");
+
+      return {
+        seat,
+        era: seatRows[0].era,
+        pctChinese: Number(wavg("pct_chinese").toFixed(1)),
+        pctMalay: Number(wavg("pct_malay").toFixed(1)),
+        pctYouth: Number(wavg("pct_youth").toFixed(1)),
+        voteShare: match?.voteShare ?? 0,
+        result: match?.result ?? "unknown",
+      };
+    })
+    .filter((s) => s.result !== "unknown");
+}
+
+export interface SeatMatch extends SeatProfile {
+  distance: number;
+}
+
+export interface SeatPrediction {
+  weighting: "chinese-weighted" | "equal";
+  nearest: SeatMatch[];
+  predictedVoteShare: number;
+  wouldBeCompetitive: boolean;
+}
+
+function normalize(value: number, min: number, max: number) {
+  return max === min ? 0.5 : (value - min) / (max - min);
+}
+
+export function predictSeat(
+  target: { pctChinese: number; pctMalay: number; pctYouth: number },
+  seats: SeatProfile[],
+  weighting: "chinese-weighted" | "equal",
+  k = 3,
+): SeatPrediction | null {
+  if (seats.length === 0) return null;
+
+  const chineseRange = [
+    Math.min(...seats.map((s) => s.pctChinese)),
+    Math.max(...seats.map((s) => s.pctChinese)),
+  ];
+  const malayRange = [
+    Math.min(...seats.map((s) => s.pctMalay)),
+    Math.max(...seats.map((s) => s.pctMalay)),
+  ];
+  const youthRange = [
+    Math.min(...seats.map((s) => s.pctYouth)),
+    Math.max(...seats.map((s) => s.pctYouth)),
+  ];
+
+  const w =
+    weighting === "chinese-weighted"
+      ? { chinese: 0.6, malay: 0.3, youth: 0.1 }
+      : { chinese: 0.34, malay: 0.33, youth: 0.33 };
+
+  const tChinese = normalize(
+    target.pctChinese,
+    chineseRange[0],
+    chineseRange[1],
+  );
+  const tMalay = normalize(target.pctMalay, malayRange[0], malayRange[1]);
+  const tYouth = normalize(target.pctYouth, youthRange[0], youthRange[1]);
+
+  const withDistance: SeatMatch[] = seats.map((s) => {
+    const sChinese = normalize(s.pctChinese, chineseRange[0], chineseRange[1]);
+    const sMalay = normalize(s.pctMalay, malayRange[0], malayRange[1]);
+    const sYouth = normalize(s.pctYouth, youthRange[0], youthRange[1]);
+    const distance = Math.sqrt(
+      w.chinese * (tChinese - sChinese) ** 2 +
+        w.malay * (tMalay - sMalay) ** 2 +
+        w.youth * (tYouth - sYouth) ** 2,
+    );
+    return { ...s, distance: Number(distance.toFixed(4)) };
+  });
+
+  const nearest = withDistance
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, k);
+
+  // Inverse-distance weighted average vote share (avoid divide-by-zero for an exact match)
+  const weights = nearest.map((n) => 1 / (n.distance + 0.01));
+  const totalWeight = weights.reduce((s, x) => s + x, 0);
+  const predictedVoteShare = Number(
+    nearest.reduce((s, n, i) => s + n.voteShare * weights[i], 0) / totalWeight,
+  );
+
+  return {
+    weighting,
+    nearest,
+    predictedVoteShare,
+    wouldBeCompetitive: predictedVoteShare >= 35, // near MUDA's two actual wins (38%, 43-44%)
+  };
 }
