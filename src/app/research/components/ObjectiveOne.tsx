@@ -17,6 +17,18 @@ import objective1Data from "@/data/research/objective1.json";
 
 export default function ObjectiveOne() {
   const objective1 = objective1Data as PactSoloSeat[];
+  const objective1WithKey = useMemo(
+    () =>
+      objective1.map((s, i) => ({
+        ...s,
+        uid: `${s.seat}|||${s.era}|||${i}`,
+      })),
+    [objective1],
+  );
+
+  function seatFromUid(uid: string) {
+    return uid.split("|||")[0];
+  }
 
   const pactSoloStats = useMemo(() => {
     const pact = objective1.filter((s) => s.era === "pact");
@@ -57,6 +69,7 @@ export default function ObjectiveOne() {
     return isMobile;
   }
   const isMobile = useIsMobile();
+
   return (
     <Card>
       <CardHeader>
@@ -90,7 +103,7 @@ export default function ObjectiveOne() {
           height={Math.max(480, objective1.length * 24)}
         >
           <BarChart
-            data={objective1}
+            data={objective1WithKey}
             layout="vertical"
             margin={{ top: 10, right: 10, left: 0 }}
           >
@@ -111,15 +124,18 @@ export default function ObjectiveOne() {
             <XAxis type="number" unit="%" />
             <YAxis
               type="category"
-              dataKey="seat"
+              dataKey="uid"
               width={isMobile ? 100 : 220}
               tick={{ fontSize: isMobile ? 10 : 11 }}
               interval={0}
               tickFormatter={(value) =>
-                isMobile ? truncateSeatName(value, 14) : value
+                isMobile
+                  ? truncateSeatName(seatFromUid(value), 14)
+                  : seatFromUid(value)
               }
             />
             <Tooltip
+              labelFormatter={(label) => seatFromUid(String(label))}
               formatter={(value) => [
                 `${Number(value).toFixed(2)}%`,
                 "Vote share",
