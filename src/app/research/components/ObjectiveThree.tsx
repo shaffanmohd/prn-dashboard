@@ -19,6 +19,7 @@ import { useState } from "react";
 import { ScatterChart, Scatter, ZAxis } from "recharts";
 import { computeRaceScatter } from "@/lib/research-aggregations";
 import { EraSeatFilter } from "@/components/research/EraSeatFiller";
+import { ScatterTooltip } from "@/components/research/ScatterTooltip";
 
 export default function ObjectiveThree() {
   const saluranRaw = saluranRawData as SaluranRawRow[];
@@ -351,10 +352,17 @@ export default function ObjectiveThree() {
               />
               <Tooltip
                 cursor={{ strokeDasharray: "3 3" }}
-                formatter={(value, name) =>
-                  name === "voters"
-                    ? [value, "Voters"]
-                    : [`${Number(value).toFixed(1)}%`, name]
+                content={
+                  <ScatterTooltip
+                    axisLabel={`% ${
+                      raceAxis === "chinese"
+                        ? "Chinese"
+                        : raceAxis === "malay"
+                          ? "Malay"
+                          : "Indian"
+                    }`}
+                    axisKey="axisValue"
+                  />
                 }
               />
               {scatterByEra.map(({ era, points }) => (

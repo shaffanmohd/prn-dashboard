@@ -125,6 +125,9 @@ export interface YouthScatterPoint {
   pctYouth: number;
   mudaVoteShare: number;
   seat: string;
+  dm: string;
+  pm: string;
+  saluran: number;
   voters: number;
 }
 
@@ -136,6 +139,9 @@ export function computeYouthScatter(
     pctYouth: r.pct_youth,
     mudaVoteShare: r.muda_vote_share,
     seat: r.seat,
+    dm: r.dm,
+    pm: r.pm,
+    saluran: Number(r.saluran),
     voters: r.voters,
   }));
 }
@@ -234,10 +240,13 @@ export function computeRaceByEra(rows: SaluranRawRow[]): RaceByEraRow[] {
 export interface RaceScatterPoint {
   era: string;
   seat: string;
+  dm: string;
+  pm: string;
+  saluran: number;
   voters: number;
   pctMalay: number;
   pctChinese: number;
-  pctIndian: number; // new
+  pctIndian: number;
   mudaVoteShare: number;
 }
 
@@ -245,6 +254,9 @@ export function computeRaceScatter(rows: SaluranRawRow[]): RaceScatterPoint[] {
   return rows.map((r) => ({
     era: r.era,
     seat: r.seat,
+    dm: r.dm,
+    pm: r.pm,
+    saluran: Number(r.saluran),
     voters: r.voters,
     pctMalay: r.pct_malay,
     pctChinese: r.pct_chinese,

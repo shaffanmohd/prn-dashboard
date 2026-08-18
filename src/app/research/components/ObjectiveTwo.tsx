@@ -22,6 +22,7 @@ import {
   pearsonCorr,
 } from "@/lib/research-aggregations";
 import { EraSeatFilter } from "@/components/research/EraSeatFiller";
+import { ScatterTooltip } from "@/components/research/ScatterTooltip";
 
 export default function ObjectiveTwo() {
   const [selectedKeys, setSelectedKeys] = useState<string[] | null>(null);
@@ -221,10 +222,11 @@ export default function ObjectiveTwo() {
                 />
                 <Tooltip
                   cursor={{ strokeDasharray: "3 3" }}
-                  formatter={(value, name) =>
-                    name === "voters"
-                      ? [value, "Voters"]
-                      : [`${Number(value).toFixed(1)}%`, name]
+                  content={
+                    <ScatterTooltip
+                      axisLabel="% aged 18-30"
+                      axisKey="pctYouth"
+                    />
                   }
                 />
                 {filteredScatterByEra.map(({ era, points }) => (
