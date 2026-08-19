@@ -23,7 +23,7 @@ import { ERA_COLORS } from "@/lib/coalition";
 import {
   computeAgeBandCorrelation,
   computeAgeTrend,
-  computeEraTopSummary,
+  // computeEraTopSummary,
   computeSelectionSummary,
   computeYouthScatter,
 } from "@/lib/research-aggregations";
@@ -34,14 +34,14 @@ export default function ObjectiveTwo() {
 
   const saluranRaw = saluranRawData as SaluranRawRow[];
 
-  const eraTop10 = useMemo(
-    () => computeEraTopSummary(saluranRaw, 10),
-    [saluranRaw],
-  );
-  const eraTop20 = useMemo(
-    () => computeEraTopSummary(saluranRaw, 20),
-    [saluranRaw],
-  );
+  // const eraTop10 = useMemo(
+  //   () => computeEraTopSummary(saluranRaw, 10),
+  //   [saluranRaw],
+  // );
+  // const eraTop20 = useMemo(
+  //   () => computeEraTopSummary(saluranRaw, 20),
+  //   [saluranRaw],
+  // );
   const youthScatter = useMemo(
     () => computeYouthScatter(saluranRaw),
     [saluranRaw],
@@ -336,7 +336,7 @@ export default function ObjectiveTwo() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-xs text-muted-foreground mb-3">
+          {/* <p className="text-xs text-muted-foreground mb-3">
             This answers:{" "}
             <strong className="text-foreground">
               which saluran did MUDA receive the most vote share from, across
@@ -345,7 +345,7 @@ export default function ObjectiveTwo() {
             Uses the same era/seat filter as the chart above — untick eras there
             to narrow this list down too. The % aged 18-30 column shows whether
             MUDA&apos;s best saluran are actually youth-heavy or not.
-          </p>
+          </p> */}
           <div className="flex items-center gap-2 mb-3">
             <span className="text-xs text-muted-foreground">Show:</span>
             {[10, 20, 50].map((n) => (
@@ -388,6 +388,13 @@ export default function ObjectiveTwo() {
                   <th className="py-2 pr-3">Saluran</th>
                   <th className="py-2 pr-3 text-right">Voters</th>
                   <th className="py-2 pr-3 text-right">% aged 18-30</th>
+                  <th className="py-2 pr-3 text-right">% aged 31-40</th>
+                  <th className="py-2 pr-3 text-right">% aged 41-50</th>
+                  <th className="py-2 pr-3 text-right">% aged 51-60</th>
+                  <th className="py-2 pr-3 text-right">% aged 61-70</th>
+                  <th className="py-2 pr-3 text-right">% aged 71-80</th>
+                  <th className="py-2 pr-3 text-right">% aged 81+</th>
+
                   <th className="py-2 pr-3 text-right">MUDA vote share</th>
                 </tr>
               </thead>
@@ -419,6 +426,24 @@ export default function ObjectiveTwo() {
                     <td className="py-1.5 pr-3 text-right">
                       {r.pct_18_30.toFixed(1)}%
                     </td>
+                    <td className="py-1.5 pr-3 text-right">
+                      {r.pct_31_40.toFixed(1)}%
+                    </td>
+                    <td className="py-1.5 pr-3 text-right">
+                      {r.pct_41_50.toFixed(1)}%
+                    </td>
+                    <td className="py-1.5 pr-3 text-right">
+                      {r.pct_51_60.toFixed(1)}%
+                    </td>
+                    <td className="py-1.5 pr-3 text-right">
+                      {r.pct_61_70.toFixed(1)}%
+                    </td>
+                    <td className="py-1.5 pr-3 text-right">
+                      {r.pct_71_80.toFixed(1)}%
+                    </td>
+                    <td className="py-1.5 pr-3 text-right">
+                      {r.pct_81_plus.toFixed(1)}%
+                    </td>
                     <td className="py-1.5 pr-3 text-right font-medium">
                       {r.muda_vote_share.toFixed(1)}%
                     </td>
@@ -434,7 +459,7 @@ export default function ObjectiveTwo() {
           <CardTitle>Conclusion</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 overflow-x-auto">
+          {/* <div className="mb-6 overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
                 <tr className="text-left text-muted-foreground border-b">
@@ -485,7 +510,7 @@ export default function ObjectiveTwo() {
               strongest saluran are actually youth-heavy, or whether something
               else (e.g. race, candidate brand) is driving the result there.
             </p>
-          </div>
+          </div> */}
 
           <div className="mb-6 p-4 border rounded-md bg-muted/30 text-sm space-y-3">
             <p className="font-semibold text-foreground">Conclusion</p>
@@ -513,21 +538,14 @@ export default function ObjectiveTwo() {
                 2. Did MUDA capture the youth vote — pact vs solo?
               </p>
               <p className="text-muted-foreground">
-                Not reliably, in either condition — but the reasons differ by
-                seat type, not by pact status. Pact-GE15 (federal) shows
-                youth-heavy saluran doing worse than regular ones (21.1% vs
-                24.0%). Pact-JHR SE15 (state) shows the opposite — a real youth
-                premium (38.3% vs 31.4%, +6.9pts), the only era with an
-                unambiguous youth effect. Solo-Larkin is flat (14.0% vs 13.2%).
-                Solo-N9 SE15 shows a premium (10.5% vs 5.6%) but on only 2
-                qualifying saluran (~1,200 voters) — too thin to trust. MUDA
-                captured youth votes in exactly one of four measurable
-                conditions, and it wasn&apos;t the biggest driver of their best
-                results even there. Seat type (state vs federal) predicts youth
-                responsiveness better than pact status does — state seats appear
-                more locally rooted, where a young local candidate&apos;s ground
-                presence may matter more relative to national party-brand
-                effects.
+                Measured narrowly (18-30 only), the picture looked inconsistent
+                — a real premium in JHR SE-15 (+6.9pts), flat or negative
+                elsewhere. The fuller 7-band breakdown above explains why:
+                pact-era support was never really an age story (every band sits
+                near 0 correlation), and the real pattern only emerges once solo
+                — not narrowly &quot;young vs old,&quot; but &quot;under ~50
+                receptive, 61+ resistant.&quot; See the age-band correlation
+                chart above for the full picture.
               </p>
             </div>
             <div>
@@ -537,16 +555,13 @@ export default function ObjectiveTwo() {
               <p className="text-muted-foreground">
                 Puteri Wangsa is the only seat with real before/after saluran
                 data — pact (2022) vs solo (2026), same physical polling
-                streams. The youth premium held in both eras (pact: 49.1%
-                youth-block vs 43.1% regular; solo: 8.2% vs 6.1%) — a modest,
-                consistent edge either way. But the overall collapse (44.4% →
-                6.8%, a 37.6pt drop) dwarfs that small youth signal. Youth
-                targeting is a minor factor next to whatever caused the
-                seat-wide crash.Youth targeting is a minor factor next to
-                whatever caused the seat-wide crash. That said, a fuller age
-                breakdown (all 5 bands, not just youth vs. not) shows the real
-                story is sharper than a simple youth premium — see the age-band
-                correlation chart above.
+                streams. The overall collapse (44.4% → 6.8%, a 37.6pt drop)
+                dwarfs any single age band&apos;s effect — age was never the
+                main driver of MUDA&apos;s loss here. But within that collapse,
+                the age-band correlation chart above shows what remained of
+                MUDA&apos;s support sharpened along age lines: the 18-30
+                correlation roughly doubled (+0.15 → +0.35) and 61+ flipped from
+                flat to clearly negative (−0.02 → −0.35).
               </p>
             </div>
           </div>
