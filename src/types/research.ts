@@ -18,7 +18,13 @@ export interface SaluranRawRow {
   pm: string;
   saluran: number;
   voters: number;
-  pct_youth: number;
+  pct_18_30: number;
+  pct_31_40: number;
+  pct_41_50: number;
+  pct_51_60: number;
+  pct_61_70: number;
+  pct_71_80: number;
+  pct_81_plus: number;
   pct_malay: number;
   pct_chinese: number;
   pct_indian: number;

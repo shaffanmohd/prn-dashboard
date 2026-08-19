@@ -5,8 +5,13 @@ import { useMemo, useState } from "react";
 import saluranRawData from "@/data/research/saluran-raw.json";
 
 import {
+  Bar,
+  BarChart,
   CartesianGrid,
+  Cell,
   Legend,
+  Pie,
+  PieChart,
   ResponsiveContainer,
   Scatter,
   ScatterChart,
@@ -17,7 +22,9 @@ import {
 } from "recharts";
 import { ERA_COLORS } from "@/lib/coalition";
 import {
+  computeAgeBandCorrelation,
   computeEraTopSummary,
+  computeSelectionSummary,
   computeYouthScatter,
   pearsonCorr,
 } from "@/lib/research-aggregations";
@@ -151,7 +158,7 @@ export default function ObjectiveTwo() {
           era,
           corr: Number(
             pearsonCorr(
-              rows.map((r) => r.pct_youth),
+              rows.map((r) => r.pct_18_30),
               rows.map((r) => r.muda_vote_share),
             ).toFixed(2),
           ),
@@ -159,6 +166,31 @@ export default function ObjectiveTwo() {
       })
       .filter((x): x is { era: string; corr: number } => x !== null);
   }, [saluranRaw, seatsByEra, activeKeys]);
+
+  const filteredSaluranRaw = useMemo(() => {
+    const activeKeySet = new Set(activeKeys);
+    return saluranRaw.filter((r) => activeKeySet.has(`${r.era}|||${r.seat}`));
+  }, [saluranRaw, activeKeys]);
+
+  const ageBandCorrelation = useMemo(
+    () => computeAgeBandCorrelation(filteredSaluranRaw),
+    [filteredSaluranRaw],
+  );
+
+  const selectionSummary = useMemo(
+    () => computeSelectionSummary(filteredSaluranRaw),
+    [filteredSaluranRaw],
+  );
+
+  const PIE_COLORS = [
+    "#2E5266",
+    "#5D8AA8",
+    "#8FA6B2",
+    "#C9A876",
+    "#D9975C",
+    "#C6672B",
+    "#A34A1F",
+  ];
 
   return (
     <>
@@ -284,6 +316,137 @@ export default function ObjectiveTwo() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            Correlation: age band % vs MUDA vote share, by era
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-4">
+            <EraSeatFilter
+              seatsByEra={seatsByEra}
+              activeKeys={activeKeys}
+              onToggleEra={toggleEra}
+              onToggleSeat={toggleSeat}
+              eraColor={eraColor}
+              isEraFullyActive={isEraFullyActive}
+              isEraPartiallyActive={isEraPartiallyActive}
+              isSeatActive={isSeatActive}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground mb-3">
+            This answers:{" "}
+            <strong className="text-foreground">
+              which specific age group actually votes MUDA
+            </strong>{" "}
+            — not just &quot;young vs not,&quot; but across all five bands. Each
+            bar is a correlation coefficient (r) between that age band&apos;s
+            share of a saluran&apos;s voters and MUDA&apos;s vote share there,
+            across every saluran in that era. +1 = that age band consistently
+            means more MUDA votes; −1 = consistently fewer; 0 = no relationship.
+          </p>
+          <ResponsiveContainer width="100%" height={320}>
+            <BarChart data={ageBandCorrelation}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="era" tick={{ fontSize: 10 }} />
+              <YAxis domain={[-1, 1]} />
+              <Tooltip formatter={(value) => [Number(value).toFixed(2), ""]} />
+              <Legend />
+              <Bar dataKey="corr18to30" name="18-30" fill={ERA_COLORS.pact} />
+              <Bar dataKey="corr31to40" name="31-40" fill="#5D8AA8" />
+              <Bar dataKey="corr41to50" name="41-50" fill="#8FA6B2" />
+              <Bar dataKey="corr51to60" name="51-60" fill="#C9A876" />
+              <Bar dataKey="corr61to70" name="61-70" fill="#D9975C" />
+              <Bar dataKey="corr71to80" name="71-80" fill="#C6672B" />
+              <Bar dataKey="corr81plus" name="81+" fill={ERA_COLORS.solo} />
+            </BarChart>
+          </ResponsiveContainer>
+          <div className="mt-4 p-4 border rounded-md bg-muted/30 text-sm space-y-3">
+            <p className="font-semibold text-foreground">Conclusion</p>
+            <p className="text-muted-foreground">
+              Under every pact era (GE-15, JHR SE-15), age barely matters at all
+              — every band sits close to 0 (|r| under 0.15). This confirms
+              MUDA&apos;s pact-era support wasn&apos;t an age story; it was a
+              race story (see Objective 3). Once solo, a real pattern shows up
+              in the two eras with a clear signal (JHR SE-16 and N9 SE-15):
+              younger and middle-aged bands (18-50) trend positive, while the
+              61+ band is consistently and often strongly negative (as low as
+              −0.65 in N9 SE-15, −0.35 in Puteri Wangsa specifically). The
+              divide isn&apos;t narrowly &quot;young vs old&quot; — it&apos;s
+              closer to &quot;under ~50 is receptive, over 60 actively
+              isn&apos;t.&quot;
+            </p>
+            <p className="text-muted-foreground">
+              Puteri Wangsa&apos;s own before/after tells the same story more
+              precisely: the 18-30 correlation roughly doubled once solo (+0.15
+              → +0.35), and the 61+ correlation went from essentially flat to
+              clearly negative (−0.02 → −0.35) — the seat&apos;s age composition
+              barely changed between 2022 and 2026, but once the pact-driven,
+              cross-age Chinese vote disappeared, what remained of MUDA&apos;s
+              support turned out to have always leaned young and struggled with
+              elderly voters — just invisible before because the bigger,
+              age-blind pact effect was drowning it out.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Selected seats — vote share & age composition</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-4">
+            <EraSeatFilter
+              seatsByEra={seatsByEra}
+              activeKeys={activeKeys}
+              onToggleEra={toggleEra}
+              onToggleSeat={toggleSeat}
+              eraColor={eraColor}
+              isEraFullyActive={isEraFullyActive}
+              isEraPartiallyActive={isEraPartiallyActive}
+              isSeatActive={isSeatActive}
+            />
+          </div>
+          <div className="grid sm:grid-cols-2 gap-6 items-center">
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">
+                MUDA vote share
+              </p>
+              <p className="text-4xl font-semibold text-foreground">
+                {selectionSummary.weightedVoteShare}%
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Across {selectionSummary.totalVoters.toLocaleString()}{" "}
+                registered voters
+              </p>
+            </div>
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie
+                  data={selectionSummary.ageComposition}
+                  dataKey="pct"
+                  nameKey="band"
+                  outerRadius={80}
+                  label={(props) => {
+                    const { band, pct } = props as unknown as {
+                      band: string;
+                      pct: number;
+                    };
+                    return `${band}: ${pct}%`;
+                  }}
+                  labelLine={false}
+                >
+                  {selectionSummary.ageComposition.map((_, i) => (
+                    <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value) => [`${value}%`, ""]} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
       {/* Question 1: which saluran did MUDA win the most vote share from? */}
       <Card>
         <CardHeader>
@@ -373,7 +536,7 @@ export default function ObjectiveTwo() {
                     </td>
                     <td className="py-1.5 pr-3 text-right">{r.voters}</td>
                     <td className="py-1.5 pr-3 text-right">
-                      {r.pct_youth.toFixed(1)}%
+                      {r.pct_18_30.toFixed(1)}%
                     </td>
                     <td className="py-1.5 pr-3 text-right font-medium">
                       {r.muda_vote_share.toFixed(1)}%
@@ -451,16 +614,17 @@ export default function ObjectiveTwo() {
                 solo?
               </p>
               <p className="text-muted-foreground">
-                In every era without exception, MUDA&apos;s single
-                best-performing saluran is 0–1% youth — their strongest results
-                come from streams that are almost entirely non-young voters.
-                Pact-era peaks (84–87% vote share) dwarf solo-era peaks
-                (13–47%), which confirms the Objective 1 pact-vs-solo collapse
-                again from a different angle. But the youth breakdown adds
-                something new: MUDA&apos;s absolute best results were never
-                driven by youth capture. Something else explains those peak
-                saluran — most likely ethnic composition, which Objective 3
-                checks directly.
+                Pact-era peaks (84-87% vote share) dwarf solo-era peaks
+                (13-47%), confirming the Objective 1 collapse again from a
+                different angle. Across the original 4 eras, MUDA&apos;s single
+                best-ever saluran was consistently 0-1% youth — old, likely
+                ethnically distinct outlier streams. But that pattern breaks the
+                moment Johor SE-16 (MUDA&apos;s current solo seat) enters the
+                data: their best current solo-era result, Maharani at 15.8%,
+                comes from a{" "}
+                <strong className="text-foreground">100% youth</strong> saluran
+                — the opposite of every pact-era peak. See the age-band
+                correlation below for why.
               </p>
             </div>
             <div>
@@ -497,7 +661,11 @@ export default function ObjectiveTwo() {
                 consistent edge either way. But the overall collapse (44.4% →
                 6.8%, a 37.6pt drop) dwarfs that small youth signal. Youth
                 targeting is a minor factor next to whatever caused the
-                seat-wide crash.
+                seat-wide crash.Youth targeting is a minor factor next to
+                whatever caused the seat-wide crash. That said, a fuller age
+                breakdown (all 5 bands, not just youth vs. not) shows the real
+                story is sharper than a simple youth premium — see the age-band
+                correlation chart above.
               </p>
             </div>
           </div>

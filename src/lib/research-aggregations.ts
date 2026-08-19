@@ -38,8 +38,8 @@ export function computeYouthPremium(
   const eras = [...new Set(rows.map((r) => r.era))];
   return eras.map((era) => {
     const eraRows = rows.filter((r) => r.era === era);
-    const pureYouth = eraRows.filter((r) => r.pct_youth >= 90);
-    const regular = eraRows.filter((r) => r.pct_youth <= 10);
+    const pureYouth = eraRows.filter((r) => r.pct_18_30 >= 90);
+    const regular = eraRows.filter((r) => r.pct_18_30 <= 10);
     return {
       era,
       pureYouthShare: Number(
@@ -136,7 +136,7 @@ export function computeYouthScatter(
 ): YouthScatterPoint[] {
   return rows.map((r) => ({
     era: r.era,
-    pctYouth: r.pct_youth,
+    pctYouth: r.pct_18_30,
     mudaVoteShare: r.muda_vote_share,
     seat: r.seat,
     dm: r.dm,
@@ -145,23 +145,66 @@ export function computeYouthScatter(
     voters: r.voters,
   }));
 }
-export interface YouthCorrelation {
+export interface AgeBandCorrelation {
   era: string;
-  corr: number;
+  corr18to30: number;
+  corr31to40: number;
+  corr41to50: number;
+  corr51to60: number;
+  corr61to70: number;
+  corr71to80: number;
+  corr81plus: number;
 }
 
-export function computeYouthCorrelation(
+export function computeAgeBandCorrelation(
   rows: SaluranRawRow[],
-): YouthCorrelation[] {
+): AgeBandCorrelation[] {
   const eras = [...new Set(rows.map((r) => r.era))];
   return eras.map((era) => {
     const eraRows = rows.filter((r) => r.era === era);
+    const share = eraRows.map((r) => r.muda_vote_share);
     return {
       era,
-      corr: Number(
+      corr18to30: Number(
         pearsonCorr(
-          eraRows.map((r) => r.pct_youth),
-          eraRows.map((r) => r.muda_vote_share),
+          eraRows.map((r) => r.pct_18_30),
+          share,
+        ).toFixed(2),
+      ),
+      corr31to40: Number(
+        pearsonCorr(
+          eraRows.map((r) => r.pct_31_40),
+          share,
+        ).toFixed(2),
+      ),
+      corr41to50: Number(
+        pearsonCorr(
+          eraRows.map((r) => r.pct_41_50),
+          share,
+        ).toFixed(2),
+      ),
+      corr51to60: Number(
+        pearsonCorr(
+          eraRows.map((r) => r.pct_51_60),
+          share,
+        ).toFixed(2),
+      ),
+      corr61to70: Number(
+        pearsonCorr(
+          eraRows.map((r) => r.pct_61_70),
+          share,
+        ).toFixed(2),
+      ),
+      corr71to80: Number(
+        pearsonCorr(
+          eraRows.map((r) => r.pct_71_80),
+          share,
+        ).toFixed(2),
+      ),
+      corr81plus: Number(
+        pearsonCorr(
+          eraRows.map((r) => r.pct_81_plus),
+          share,
         ).toFixed(2),
       ),
     };
@@ -199,7 +242,7 @@ export function computeEraTopSummary(
         : 0,
       bestSeat: best ? `${best.seat} — ${best.dm} #${best.saluran}` : "—",
       bestVoteShare: best ? Number(best.muda_vote_share.toFixed(1)) : 0,
-      bestPctYouth: best ? Number(best.pct_youth.toFixed(0)) : 0,
+      bestPctYouth: best ? Number(best.pct_18_30.toFixed(0)) : 0,
       totalSaluran: eraRows.length,
     };
   });
@@ -290,7 +333,7 @@ export function computeSeatProfiles(
     .map((seat) => {
       const seatRows = pactRows.filter((r) => r.seat === seat);
       const totalVoters = seatRows.reduce((s, r) => s + r.voters, 0);
-      const wavg = (key: "pct_chinese" | "pct_malay" | "pct_youth") =>
+      const wavg = (key: "pct_chinese" | "pct_malay" | "pct_18_30") =>
         totalVoters
           ? seatRows.reduce((s, r) => s + r[key] * r.voters, 0) / totalVoters
           : 0;
@@ -302,7 +345,7 @@ export function computeSeatProfiles(
         era: seatRows[0].era,
         pctChinese: Number(wavg("pct_chinese").toFixed(1)),
         pctMalay: Number(wavg("pct_malay").toFixed(1)),
-        pctYouth: Number(wavg("pct_youth").toFixed(1)),
+        pctYouth: Number(wavg("pct_18_30").toFixed(1)),
         voteShare: match?.voteShare ?? 0,
         result: match?.result ?? "unknown",
       };
@@ -387,5 +430,81 @@ export function predictSeat(
     nearest,
     predictedVoteShare,
     wouldBeCompetitive: predictedVoteShare >= 35, // near MUDA's two actual wins (38%, 43-44%)
+  };
+}
+
+export interface SelectionSummary {
+  totalVoters: number;
+  weightedVoteShare: number;
+  ageComposition: { band: string; pct: number }[];
+}
+
+export function computeSelectionSummary(
+  rows: SaluranRawRow[],
+): SelectionSummary {
+  const totalVoters = rows.reduce((s, r) => s + r.voters, 0);
+
+  const weightedVoteShare = totalVoters
+    ? rows.reduce((s, r) => s + r.muda_vote_share * r.voters, 0) / totalVoters
+    : 0;
+
+  const wavgBand = (key: keyof SaluranRawRow) =>
+    totalVoters
+      ? rows.reduce((s, r) => s + (r[key] as number) * r.voters, 0) /
+        totalVoters
+      : 0;
+
+  const ageComposition = [
+    { band: "18-30", pct: Number(wavgBand("pct_18_30").toFixed(1)) },
+    { band: "31-40", pct: Number(wavgBand("pct_31_40").toFixed(1)) },
+    { band: "41-50", pct: Number(wavgBand("pct_41_50").toFixed(1)) },
+    { band: "51-60", pct: Number(wavgBand("pct_51_60").toFixed(1)) },
+    { band: "61-70", pct: Number(wavgBand("pct_61_70").toFixed(1)) },
+    { band: "71-80", pct: Number(wavgBand("pct_71_80").toFixed(1)) },
+    { band: "81+", pct: Number(wavgBand("pct_81_plus").toFixed(1)) },
+  ];
+
+  return {
+    totalVoters,
+    weightedVoteShare: Number(weightedVoteShare.toFixed(2)),
+    ageComposition,
+  };
+}
+export interface RaceSelectionSummary {
+  totalVoters: number;
+  weightedVoteShare: number;
+  raceComposition: { race: string; pct: number }[];
+}
+
+export function computeRaceSelectionSummary(
+  rows: SaluranRawRow[],
+): RaceSelectionSummary {
+  const totalVoters = rows.reduce((s, r) => s + r.voters, 0);
+
+  const weightedVoteShare = totalVoters
+    ? rows.reduce((s, r) => s + r.muda_vote_share * r.voters, 0) / totalVoters
+    : 0;
+
+  const wavgRace = (key: "pct_malay" | "pct_chinese" | "pct_indian") =>
+    totalVoters
+      ? rows.reduce((s, r) => s + r[key] * r.voters, 0) / totalVoters
+      : 0;
+
+  const malay = wavgRace("pct_malay");
+  const chinese = wavgRace("pct_chinese");
+  const indian = wavgRace("pct_indian");
+  const other = Math.max(0, 100 - malay - chinese - indian);
+
+  const raceComposition = [
+    { race: "Malay", pct: Number(malay.toFixed(1)) },
+    { race: "Chinese", pct: Number(chinese.toFixed(1)) },
+    { race: "Indian", pct: Number(indian.toFixed(1)) },
+    { race: "Other", pct: Number(other.toFixed(1)) },
+  ];
+
+  return {
+    totalVoters,
+    weightedVoteShare: Number(weightedVoteShare.toFixed(2)),
+    raceComposition,
   };
 }

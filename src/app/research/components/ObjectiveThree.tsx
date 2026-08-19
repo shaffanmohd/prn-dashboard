@@ -1,13 +1,19 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ERA_COLORS } from "@/lib/coalition";
-import { computeRaceCorrelation } from "@/lib/research-aggregations";
+import {
+  computeRaceCorrelation,
+  computeRaceSelectionSummary,
+} from "@/lib/research-aggregations";
 import { SaluranRawRow } from "@/types/research";
 import { useMemo } from "react";
 import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   Legend,
+  Pie,
+  PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -23,12 +29,6 @@ import { ScatterTooltip } from "@/components/research/ScatterTooltip";
 
 export default function ObjectiveThree() {
   const saluranRaw = saluranRawData as SaluranRawRow[];
-
-  const raceCorrelation = useMemo(
-    () => computeRaceCorrelation(saluranRaw),
-    [saluranRaw],
-  );
-  const raceByEra = useMemo(() => computeRaceByEra(saluranRaw), [saluranRaw]);
 
   const raceScatter = useMemo(
     () => computeRaceScatter(saluranRaw),
@@ -118,6 +118,27 @@ export default function ObjectiveThree() {
       .filter((e) => e.points.length > 0);
   }, [raceScatter, raceAxis, activeKeys]);
 
+  const filteredSaluranRaw = useMemo(() => {
+    const activeKeySet = new Set(activeKeys);
+    return saluranRaw.filter((r) => activeKeySet.has(`${r.era}|||${r.seat}`));
+  }, [saluranRaw, activeKeys]);
+
+  const raceSelectionSummary = useMemo(
+    () => computeRaceSelectionSummary(filteredSaluranRaw),
+    [filteredSaluranRaw],
+  );
+
+  const RACE_PIE_COLORS = ["#8FA6B2", "#2E5266", "#C6672B", "#D8D3C7"];
+
+  const raceCorrelation = useMemo(
+    () => computeRaceCorrelation(filteredSaluranRaw),
+    [filteredSaluranRaw],
+  );
+  const raceByEra = useMemo(
+    () => computeRaceByEra(filteredSaluranRaw),
+    [filteredSaluranRaw],
+  );
+
   return (
     <>
       <Card>
@@ -125,6 +146,18 @@ export default function ObjectiveThree() {
           <CardTitle>MUDA vote share by racial bucket</CardTitle>
         </CardHeader>
         <CardContent>
+          <div className="mb-4">
+            <EraSeatFilter
+              seatsByEra={seatsByEra}
+              activeKeys={activeKeys}
+              onToggleEra={toggleEra}
+              onToggleSeat={toggleSeat}
+              eraColor={eraColor}
+              isEraFullyActive={isEraFullyActive}
+              isEraPartiallyActive={isEraPartiallyActive}
+              isSeatActive={isSeatActive}
+            />
+          </div>
           <ResponsiveContainer width="100%" height={360}>
             <BarChart data={raceByEra}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -191,6 +224,18 @@ export default function ObjectiveThree() {
           </CardTitle>
         </CardHeader>
         <CardContent>
+          <div className="mb-4">
+            <EraSeatFilter
+              seatsByEra={seatsByEra}
+              activeKeys={activeKeys}
+              onToggleEra={toggleEra}
+              onToggleSeat={toggleSeat}
+              eraColor={eraColor}
+              isEraFullyActive={isEraFullyActive}
+              isEraPartiallyActive={isEraPartiallyActive}
+              isSeatActive={isSeatActive}
+            />
+          </div>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={raceCorrelation}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -246,6 +291,67 @@ export default function ObjectiveThree() {
               to call it either a borrowed-vote effect or a stable base. It just
               never became a defining factor in either direction.
             </p>
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            Selected seats — vote share & racial composition
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-4">
+            <EraSeatFilter
+              seatsByEra={seatsByEra}
+              activeKeys={activeKeys}
+              onToggleEra={toggleEra}
+              onToggleSeat={toggleSeat}
+              eraColor={eraColor}
+              isEraFullyActive={isEraFullyActive}
+              isEraPartiallyActive={isEraPartiallyActive}
+              isSeatActive={isSeatActive}
+            />
+          </div>
+          <div className="grid sm:grid-cols-2 gap-6 items-center">
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">
+                MUDA vote share
+              </p>
+              <p className="text-4xl font-semibold text-foreground">
+                {raceSelectionSummary.weightedVoteShare}%
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Across {raceSelectionSummary.totalVoters.toLocaleString()}{" "}
+                registered voters
+              </p>
+            </div>
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie
+                  data={raceSelectionSummary.raceComposition}
+                  dataKey="pct"
+                  nameKey="race"
+                  outerRadius={80}
+                  label={(props) => {
+                    const { race, pct } = props as unknown as {
+                      race: string;
+                      pct: number;
+                    };
+                    return `${race}: ${pct}%`;
+                  }}
+                  labelLine={false}
+                >
+                  {raceSelectionSummary.raceComposition.map((_, i) => (
+                    <Cell
+                      key={i}
+                      fill={RACE_PIE_COLORS[i % RACE_PIE_COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value) => [`${value}%`, ""]} />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </CardContent>
       </Card>

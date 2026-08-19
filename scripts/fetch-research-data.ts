@@ -84,7 +84,13 @@ async function main() {
     WITH voter_agg AS (
       SELECT dm, pm, saluran, parlimen AS seat, 'Pact - GE15' AS era,
         COUNT(*) AS voters,
-        COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 18 AND 30) * 100.0 / COUNT(*) AS pct_youth,
+        COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 18 AND 30) * 100.0 / COUNT(*) AS pct_18_30,
+        COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 31 AND 40) * 100.0 / COUNT(*) AS pct_31_40,
+        COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 41 AND 50) * 100.0 / COUNT(*) AS pct_41_50,
+        COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 51 AND 60) * 100.0 / COUNT(*) AS pct_51_60,
+        COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 61 AND 70) * 100.0 / COUNT(*) AS pct_61_70,
+        COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 71 AND 80) * 100.0 / COUNT(*) AS pct_71_80,
+        COUNT(*) FILTER (WHERE (2022 - birth_year) > 80) * 100.0 / COUNT(*) AS pct_81_plus,
         COUNT(*) FILTER (WHERE ethnicity = 'Malay') * 100.0 / COUNT(*) AS pct_malay,
         COUNT(*) FILTER (WHERE ethnicity = 'Chinese') * 100.0 / COUNT(*) AS pct_chinese,
         COUNT(*) FILTER (WHERE ethnicity = 'Indian') * 100.0 / COUNT(*) AS pct_indian
@@ -100,7 +106,13 @@ async function main() {
       SELECT dm, pm, saluran, dun AS seat,
         CASE WHEN dun = 'N.44 Larkin' THEN 'Solo - Larkin SE15' ELSE 'Pact - JHR SE15' END AS era,
         COUNT(*) AS voters,
-        COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 18 AND 30) * 100.0 / COUNT(*) AS pct_youth,
+        COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 18 AND 30) * 100.0 / COUNT(*) AS pct_18_30,
+        COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 31 AND 40) * 100.0 / COUNT(*) AS pct_31_40,
+        COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 41 AND 50) * 100.0 / COUNT(*) AS pct_41_50,
+        COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 51 AND 60) * 100.0 / COUNT(*) AS pct_51_60,
+        COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 61 AND 70) * 100.0 / COUNT(*) AS pct_61_70,
+        COUNT(*) FILTER (WHERE (2022 - birth_year) BETWEEN 71 AND 80) * 100.0 / COUNT(*) AS pct_71_80,
+        COUNT(*) FILTER (WHERE (2022 - birth_year) > 80) * 100.0 / COUNT(*) AS pct_81_plus,
         COUNT(*) FILTER (WHERE ethnicity = 'Malay') * 100.0 / COUNT(*) AS pct_malay,
         COUNT(*) FILTER (WHERE ethnicity = 'Chinese') * 100.0 / COUNT(*) AS pct_chinese,
         COUNT(*) FILTER (WHERE ethnicity = 'Indian') * 100.0 / COUNT(*) AS pct_indian
@@ -115,7 +127,13 @@ async function main() {
 
       SELECT dm, pm, saluran, dun AS seat, 'Solo - N9 SE15' AS era,
         COUNT(*) AS voters,
-        COUNT(*) FILTER (WHERE (2023 - birth_year) BETWEEN 18 AND 30) * 100.0 / COUNT(*) AS pct_youth,
+        COUNT(*) FILTER (WHERE (2023 - birth_year) BETWEEN 18 AND 30) * 100.0 / COUNT(*) AS pct_18_30,
+        COUNT(*) FILTER (WHERE (2023 - birth_year) BETWEEN 31 AND 40) * 100.0 / COUNT(*) AS pct_31_40,
+        COUNT(*) FILTER (WHERE (2023 - birth_year) BETWEEN 41 AND 50) * 100.0 / COUNT(*) AS pct_41_50,
+        COUNT(*) FILTER (WHERE (2023 - birth_year) BETWEEN 51 AND 60) * 100.0 / COUNT(*) AS pct_51_60,
+        COUNT(*) FILTER (WHERE (2023 - birth_year) BETWEEN 61 AND 70) * 100.0 / COUNT(*) AS pct_61_70,
+        COUNT(*) FILTER (WHERE (2023 - birth_year) BETWEEN 71 AND 80) * 100.0 / COUNT(*) AS pct_71_80,
+        COUNT(*) FILTER (WHERE (2023 - birth_year) > 80) * 100.0 / COUNT(*) AS pct_81_plus,
         COUNT(*) FILTER (WHERE ethnicity = 'Malay') * 100.0 / COUNT(*) AS pct_malay,
         COUNT(*) FILTER (WHERE ethnicity = 'Chinese') * 100.0 / COUNT(*) AS pct_chinese,
         COUNT(*) FILTER (WHERE ethnicity = 'Indian') * 100.0 / COUNT(*) AS pct_indian
@@ -130,7 +148,13 @@ async function main() {
 
       SELECT dm, pm, saluran, dun AS seat, 'Solo - JHR SE16' AS era,
         COUNT(*) AS voters,
-        COUNT(*) FILTER (WHERE (2026 - birth_year) BETWEEN 18 AND 30) * 100.0 / COUNT(*) AS pct_youth,
+        COUNT(*) FILTER (WHERE (2026 - birth_year) BETWEEN 18 AND 30) * 100.0 / COUNT(*) AS pct_18_30,
+        COUNT(*) FILTER (WHERE (2026 - birth_year) BETWEEN 31 AND 40) * 100.0 / COUNT(*) AS pct_31_40,
+        COUNT(*) FILTER (WHERE (2026 - birth_year) BETWEEN 41 AND 50) * 100.0 / COUNT(*) AS pct_41_50,
+        COUNT(*) FILTER (WHERE (2026 - birth_year) BETWEEN 51 AND 60) * 100.0 / COUNT(*) AS pct_51_60,
+        COUNT(*) FILTER (WHERE (2026 - birth_year) BETWEEN 61 AND 70) * 100.0 / COUNT(*) AS pct_61_70,
+        COUNT(*) FILTER (WHERE (2026 - birth_year) BETWEEN 71 AND 80) * 100.0 / COUNT(*) AS pct_71_80,
+        COUNT(*) FILTER (WHERE (2026 - birth_year) > 80) * 100.0 / COUNT(*) AS pct_81_plus,
         COUNT(*) FILTER (WHERE ethnicity = 'Malay') * 100.0 / COUNT(*) AS pct_malay,
         COUNT(*) FILTER (WHERE ethnicity = 'Chinese') * 100.0 / COUNT(*) AS pct_chinese,
         COUNT(*) FILTER (WHERE ethnicity = 'Indian') * 100.0 / COUNT(*) AS pct_indian
@@ -166,7 +190,9 @@ async function main() {
       WHERE party_uid = '120-MUDA'
     )
     SELECT d.era, d.seat, d.dm, d.pm, d.saluran, d.voters,
-           d.pct_youth, d.pct_malay, d.pct_chinese, d.pct_indian,
+           d.pct_18_30, d.pct_31_40, d.pct_41_50, d.pct_51_60,
+           d.pct_61_70, d.pct_71_80, d.pct_81_plus,
+           d.pct_malay, d.pct_chinese, d.pct_indian,
            v.votes AS muda_votes, v.votes_perc AS muda_vote_share
     FROM voter_agg d
     JOIN saluran_muda v
