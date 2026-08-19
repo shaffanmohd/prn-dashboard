@@ -10,26 +10,24 @@ import {
   CartesianGrid,
   Cell,
   Legend,
+  Line,
+  LineChart,
   Pie,
   PieChart,
   ResponsiveContainer,
-  Scatter,
-  ScatterChart,
   Tooltip,
   XAxis,
   YAxis,
-  ZAxis,
 } from "recharts";
 import { ERA_COLORS } from "@/lib/coalition";
 import {
   computeAgeBandCorrelation,
+  computeAgeTrend,
   computeEraTopSummary,
   computeSelectionSummary,
   computeYouthScatter,
-  pearsonCorr,
 } from "@/lib/research-aggregations";
 import { EraSeatFilter } from "@/components/research/EraSeatFiller";
-import { ScatterTooltip } from "@/components/research/ScatterTooltip";
 
 export default function ObjectiveTwo() {
   const [selectedKeys, setSelectedKeys] = useState<string[] | null>(null);
@@ -48,14 +46,6 @@ export default function ObjectiveTwo() {
     () => computeYouthScatter(saluranRaw),
     [saluranRaw],
   );
-
-  const scatterByEra = useMemo(() => {
-    const eras = [...new Set(youthScatter.map((p) => p.era))];
-    return eras.map((era) => ({
-      era,
-      points: youthScatter.filter((p) => p.era === era),
-    }));
-  }, [youthScatter]);
 
   const eraColor = (era: string) =>
     era.startsWith("Pact") ? ERA_COLORS.pact : ERA_COLORS.solo;
@@ -125,48 +115,6 @@ export default function ObjectiveTwo() {
     });
   };
 
-  const filteredScatterByEra = useMemo(
-    () =>
-      scatterByEra
-        .map((e) => ({
-          era: e.era,
-          points: e.points.filter((p) =>
-            activeKeys.includes(`${p.era}|||${p.seat}`),
-          ),
-        }))
-        .filter((e) => e.points.length > 0),
-    [scatterByEra, activeKeys],
-  );
-
-  const filteredYouthCorr = useMemo(() => {
-    const activeKeySet = new Set(activeKeys);
-    const eras = [...seatsByEra.keys()];
-
-    return eras
-      .map((era) => {
-        const seats = seatsByEra.get(era) ?? [];
-        const activeSeatsInEra = seats.filter((seat) =>
-          activeKeySet.has(`${era}|||${seat}`),
-        );
-        if (activeSeatsInEra.length === 0) return null;
-
-        const activeSeatSet = new Set(activeSeatsInEra);
-        const rows = saluranRaw.filter(
-          (r) => r.era === era && activeSeatSet.has(r.seat),
-        );
-        return {
-          era,
-          corr: Number(
-            pearsonCorr(
-              rows.map((r) => r.pct_18_30),
-              rows.map((r) => r.muda_vote_share),
-            ).toFixed(2),
-          ),
-        };
-      })
-      .filter((x): x is { era: string; corr: number } => x !== null);
-  }, [saluranRaw, seatsByEra, activeKeys]);
-
   const filteredSaluranRaw = useMemo(() => {
     const activeKeySet = new Set(activeKeys);
     return saluranRaw.filter((r) => activeKeySet.has(`${r.era}|||${r.seat}`));
@@ -191,131 +139,17 @@ export default function ObjectiveTwo() {
     "#C6672B",
     "#A34A1F",
   ];
+  const ageTrend = useMemo(
+    () => computeAgeTrend(filteredSaluranRaw),
+    [filteredSaluranRaw],
+  );
+  const trendEras = useMemo(
+    () => [...new Set(filteredSaluranRaw.map((r) => r.era))],
+    [filteredSaluranRaw],
+  );
 
   return (
     <>
-      <Card>
-        <CardHeader>
-          <CardTitle>Youth % vs. MUDA vote share, per saluran</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {/* Question to answer: did MUDA capture the youth vote? */}
-          <div className="mt-8">
-            <div className="mb-4">
-              <EraSeatFilter
-                seatsByEra={seatsByEra}
-                activeKeys={activeKeys}
-                onToggleEra={toggleEra}
-                onToggleSeat={toggleSeat}
-                eraColor={eraColor}
-                isEraFullyActive={isEraFullyActive}
-                isEraPartiallyActive={isEraPartiallyActive}
-                isSeatActive={isSeatActive}
-              />
-            </div>
-            <ResponsiveContainer width="100%" height={800}>
-              <ScatterChart
-                margin={{ top: 20, right: 30, bottom: 40, left: 50 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  type="number"
-                  dataKey="pctYouth"
-                  name="% aged 18-30"
-                  unit="%"
-                  domain={[0, 100]}
-                  label={{
-                    value: "% of saluran's voters aged 18–30",
-                    position: "bottom",
-                    offset: 10,
-                    fontSize: 11,
-                    fill: "#5B6670",
-                  }}
-                />
-                <YAxis
-                  type="number"
-                  dataKey="mudaVoteShare"
-                  name="MUDA vote share"
-                  unit="%"
-                  label={{
-                    value: "MUDA vote share (%)",
-                    angle: -90,
-                    position: "left",
-                    offset: 20,
-                    fontSize: 11,
-                    fill: "#5B6670",
-                  }}
-                />
-                <ZAxis
-                  type="number"
-                  dataKey="voters"
-                  range={[20, 200]}
-                  name="voters"
-                />
-                <Tooltip
-                  cursor={{ strokeDasharray: "3 3" }}
-                  content={
-                    <ScatterTooltip
-                      axisLabel="% aged 18-30"
-                      axisKey="pctYouth"
-                    />
-                  }
-                />
-                {filteredScatterByEra.map(({ era, points }) => (
-                  <Scatter
-                    key={era}
-                    name={era}
-                    data={points}
-                    fill={eraColor(era)}
-                    fillOpacity={0.6}
-                  />
-                ))}
-                <Legend verticalAlign="top" height={30} />
-              </ScatterChart>
-            </ResponsiveContainer>
-            <div className="flex gap-4 mt-2 text-xs text-muted-foreground">
-              {filteredYouthCorr.map((c) => (
-                <span key={c.era}>
-                  <strong className="text-foreground">{c.era}</strong>: r ={" "}
-                  {c.corr}
-                </span>
-              ))}
-            </div>
-          </div>
-          <p className="text-xs text-muted-foreground mb-3">
-            This answers:{" "}
-            <strong className="text-foreground">
-              did MUDA capture the youth vote, by era?
-            </strong>{" "}
-            Each dot is one saluran (polling stream). Its position left-to-right
-            shows how youth-heavy that saluran&apos;s voter roll is (% aged
-            18–30); its position bottom-to-top shows how well MUDA actually did
-            there (vote share %). Dot size reflects how many voters are in that
-            saluran.
-            <br />
-            <br />
-            <strong className="text-foreground">Finding:</strong> the youth
-            premium is inconsistent across pact-era seats. Johor DUN pact seats
-            show a real premium (youth-block saluran averaged 38.3% vote share
-            vs. 31.4% in regular saluran, +6.9pts). The GE-15 federal seats show
-            the opposite — a slightly negative premium (21.1% vs 24.0%, −2.9pts)
-            once all six MUDA-contested seats are included, not just Muar and
-            Tanjung Piai. Larkin, the one seat where PH genuinely contested
-            against MUDA in Johor SE-15, shows almost no premium either way
-            (14.0% vs 13.2%). Only Temiang (solo, N9) shows youth-heavy saluran
-            clearly outperforming — though on a very thin sample (2 qualifying
-            saluran, ~1,200 voters).
-            <br />
-            <br />
-            The <strong className="text-foreground">r value</strong> below each
-            era is a correlation coefficient across all saluran in that group:
-            closer to +1 means youth-heavy saluran reliably did better for MUDA,
-            closer to 0 means no relationship, negative means youth-heavy
-            saluran did worse.
-          </p>
-        </CardContent>
-      </Card>
-
       <Card>
         <CardHeader>
           <CardTitle>
@@ -445,6 +279,53 @@ export default function ObjectiveTwo() {
               </PieChart>
             </ResponsiveContainer>
           </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>MUDA vote share trend, by age band</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-4">
+            <EraSeatFilter
+              seatsByEra={seatsByEra}
+              activeKeys={activeKeys}
+              onToggleEra={toggleEra}
+              onToggleSeat={toggleSeat}
+              eraColor={eraColor}
+              isEraFullyActive={isEraFullyActive}
+              isEraPartiallyActive={isEraPartiallyActive}
+              isSeatActive={isSeatActive}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground mb-3">
+            For each age band, this takes the 25% of saluran where that age
+            group is most concentrated, and shows MUDA&apos;s average vote share
+            among them — a direct trend line of &quot;as this age group becomes
+            more dominant in a saluran, how does MUDA perform there.&quot;
+          </p>
+          <ResponsiveContainer width="100%" height={360}>
+            <LineChart data={ageTrend}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="band" tick={{ fontSize: 11 }} />
+              <YAxis unit="%" />
+              <Tooltip
+                formatter={(value) => [`${Number(value).toFixed(1)}%`, ""]}
+              />
+              <Legend />
+              {trendEras.map((era) => (
+                <Line
+                  key={era}
+                  type="monotone"
+                  dataKey={era}
+                  name={era}
+                  stroke={eraColor(era)}
+                  strokeWidth={2}
+                  dot={{ r: 3 }}
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
         </CardContent>
       </Card>
       {/* Question 1: which saluran did MUDA win the most vote share from? */}

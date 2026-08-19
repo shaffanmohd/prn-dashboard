@@ -508,3 +508,46 @@ export function computeRaceSelectionSummary(
     raceComposition,
   };
 }
+export interface AgeTrendPoint {
+  band: string;
+  bandOrder: number;
+  [era: string]: string | number;
+}
+
+const AGE_BANDS: { key: keyof SaluranRawRow; label: string; order: number }[] =
+  [
+    { key: "pct_18_30", label: "18-30", order: 1 },
+    { key: "pct_31_40", label: "31-40", order: 2 },
+    { key: "pct_41_50", label: "41-50", order: 3 },
+    { key: "pct_51_60", label: "51-60", order: 4 },
+    { key: "pct_61_70", label: "61-70", order: 5 },
+    { key: "pct_71_80", label: "71-80", order: 6 },
+    { key: "pct_81_plus", label: "81+", order: 7 },
+  ];
+
+export function computeAgeTrend(rows: SaluranRawRow[]): AgeTrendPoint[] {
+  const eras = [...new Set(rows.map((r) => r.era))];
+
+  return AGE_BANDS.map(({ key, label, order }) => {
+    const point: AgeTrendPoint = { band: label, bandOrder: order };
+
+    for (const era of eras) {
+      const eraRows = rows.filter((r) => r.era === era);
+      const sorted = [...eraRows].sort(
+        (a, b) => (b[key] as number) - (a[key] as number),
+      );
+      const topQuartile = sorted.slice(
+        0,
+        Math.max(1, Math.ceil(sorted.length * 0.25)),
+      );
+      const totalVoters = topQuartile.reduce((s, r) => s + r.voters, 0);
+      const weightedShare = totalVoters
+        ? topQuartile.reduce((s, r) => s + r.muda_vote_share * r.voters, 0) /
+          totalVoters
+        : 0;
+      point[era] = Number(weightedShare.toFixed(1));
+    }
+
+    return point;
+  });
+}
