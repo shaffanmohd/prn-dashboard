@@ -325,20 +325,25 @@ export function computeSeatProfiles(
     voteShare: number | null;
     result: string;
   }[],
+  eraGroup: "pact" | "solo",
 ): SeatProfile[] {
-  const pactRows = rows.filter((r) => r.era.startsWith("Pact"));
-  const seats = [...new Set(pactRows.map((r) => r.seat))];
+  const filteredRows = rows.filter((r) =>
+    eraGroup === "pact" ? r.era.startsWith("Pact") : r.era.startsWith("Solo"),
+  );
+  const seats = [...new Set(filteredRows.map((r) => r.seat))];
 
   return seats
     .map((seat) => {
-      const seatRows = pactRows.filter((r) => r.seat === seat);
+      const seatRows = filteredRows.filter((r) => r.seat === seat);
       const totalVoters = seatRows.reduce((s, r) => s + r.voters, 0);
       const wavg = (key: "pct_chinese" | "pct_malay" | "pct_18_30") =>
         totalVoters
           ? seatRows.reduce((s, r) => s + r[key] * r.voters, 0) / totalVoters
           : 0;
 
-      const match = objective1.find((o) => o.seat === seat && o.era === "pact");
+      const match = objective1.find(
+        (o) => o.seat === seat && o.era === eraGroup,
+      );
 
       return {
         seat,
@@ -358,7 +363,7 @@ export interface SeatMatch extends SeatProfile {
 }
 
 export interface SeatPrediction {
-  weighting: "chinese-weighted" | "equal";
+  weighting: "chinese-weighted" | "malay-weighted" | "equal";
   nearest: SeatMatch[];
   predictedVoteShare: number;
   wouldBeCompetitive: boolean;
@@ -371,7 +376,7 @@ function normalize(value: number, min: number, max: number) {
 export function predictSeat(
   target: { pctChinese: number; pctMalay: number; pctYouth: number },
   seats: SeatProfile[],
-  weighting: "chinese-weighted" | "equal",
+  weighting: "chinese-weighted" | "malay-weighted" | "equal",
   k = 3,
 ): SeatPrediction | null {
   if (seats.length === 0) return null;
@@ -389,11 +394,12 @@ export function predictSeat(
     Math.max(...seats.map((s) => s.pctYouth)),
   ];
 
-  const w =
-    weighting === "chinese-weighted"
-      ? { chinese: 0.6, malay: 0.3, youth: 0.1 }
-      : { chinese: 0.34, malay: 0.33, youth: 0.33 };
-
+  const weightSchemes = {
+    "chinese-weighted": { chinese: 0.6, malay: 0.3, youth: 0.1 },
+    "malay-weighted": { chinese: 0.15, malay: 0.55, youth: 0.3 },
+    equal: { chinese: 0.34, malay: 0.33, youth: 0.33 },
+  };
+  const w = weightSchemes[weighting];
   const tChinese = normalize(
     target.pctChinese,
     chineseRange[0],

@@ -21,10 +21,17 @@ export function GE16Predictor({
   objective1,
   klSeats,
 }: GE16PredictorProps) {
-  const seatProfiles = useMemo(
-    () => computeSeatProfiles(saluranRaw, objective1),
+  const [mode, setMode] = useState<"pact" | "solo">("pact");
+
+  const pactProfiles = useMemo(
+    () => computeSeatProfiles(saluranRaw, objective1, "pact"),
     [saluranRaw, objective1],
   );
+  const soloProfiles = useMemo(
+    () => computeSeatProfiles(saluranRaw, objective1, "solo"),
+    [saluranRaw, objective1],
+  );
+  const seatProfiles = mode === "pact" ? pactProfiles : soloProfiles;
 
   const [pctChinese, setPctChinese] = useState("25");
   const [pctMalay, setPctMalay] = useState("60");
@@ -39,17 +46,17 @@ export function GE16Predictor({
       pctMalay: Number(pctMalay),
       pctYouth: Number(pctYouth),
     };
-    const chineseWeighted = predictSeat(
+    const primary = predictSeat(
       target,
       seatProfiles,
-      "chinese-weighted",
+      mode === "pact" ? "chinese-weighted" : "malay-weighted",
     );
     const equal = predictSeat(target, seatProfiles, "equal");
-    if (!chineseWeighted || !equal) {
+    if (!primary || !equal) {
       setResult(null);
       return;
     }
-    setResult([chineseWeighted, equal]);
+    setResult([primary, equal]);
   };
 
   return (
@@ -69,6 +76,33 @@ export function GE16Predictor({
           forecast. With only {seatProfiles.length} historical seats, treat this
           as an informed comparison, not a prediction with real confidence
           intervals.
+        </p>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setMode("pact")}
+            className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
+              mode === "pact"
+                ? "bg-foreground text-background border-foreground"
+                : "text-muted-foreground border-muted"
+            }`}
+          >
+            If pact ({pactProfiles.length} reference seats)
+          </button>
+          <button
+            onClick={() => setMode("solo")}
+            className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
+              mode === "solo"
+                ? "bg-foreground text-background border-foreground"
+                : "text-muted-foreground border-muted"
+            }`}
+          >
+            If solo ({soloProfiles.length} reference seats)
+          </button>
+        </div>
+        <p className="text-xs text-muted-foreground bg-muted/40 border rounded-md p-3">
+          {mode === "pact"
+            ? "Pact mode compares against MUDA's 12 pact-era seats, where % Chinese was by far the strongest predictor of performance (r ≈ +0.93-0.95) — the primary weighting reflects that."
+            : `Solo mode compares against MUDA's ${soloProfiles.length} solo-era seats — a much smaller reference set, so treat this with extra caution. In solo contests, % Malay and youth showed more signal than % Chinese, which actually flips negative in solo data — the primary weighting reflects that shift.`}
         </p>
         <SeatCombobox
           seats={klSeats}
@@ -102,6 +136,10 @@ export function GE16Predictor({
               onChange={(e) => setPctYouth(e.target.value)}
               type="number"
             />
+            <p className="text-[10px] text-muted-foreground mt-0.5">
+              Simplified to one band — full age-band analysis is on the Youth
+              Targeting tab.
+            </p>
           </div>
         </div>
         <Button size="sm" onClick={handlePredict}>
@@ -114,24 +152,41 @@ export function GE16Predictor({
               <div key={r.weighting} className="border rounded-md p-3">
                 <p className="text-xs font-semibold mb-1">
                   {r.weighting === "chinese-weighted"
-                    ? "Chinese-weighted (per Objective 3's correlation findings)"
-                    : "Equal weighting (no assumptions)"}
+                    ? "Chinese-weighted (pact-era pattern)"
+                    : r.weighting === "malay-weighted"
+                      ? "Malay-weighted (solo-era pattern)"
+                      : "Equal weighting (no assumptions)"}
                 </p>
                 <p className="text-xs text-muted-foreground mb-2">
                   {r.weighting === "chinese-weighted"
-                    ? "Finds the closest historical seat by prioritizing % Chinese match (60% of the comparison), since Objective 3 found that factor predicts MUDA's performance far more reliably than the others."
-                    : "Finds the closest historical seat by weighing % Chinese, % Malay, and % youth equally (33% each) — a sanity check that doesn't assume any one factor matters more."}
+                    ? "Finds the closest historical seat by prioritizing % Chinese match (60% of the comparison), since pact-era data found that factor predicts MUDA's performance far more reliably than the others."
+                    : r.weighting === "malay-weighted"
+                      ? "Finds the closest historical seat by prioritizing % Malay (55%) and youth (30%) — since solo-era data showed those factors matter more than % Chinese, which actually turns negative once solo."
+                      : "Finds the closest historical seat by weighing % Chinese, % Malay, and % youth equally (33% each) — a sanity check that doesn't assume any one factor matters more."}
                 </p>
-                <p className="text-sm mb-2">
-                  Predicted vote share:{" "}
-                  <strong className="text-foreground">
-                    {r.predictedVoteShare.toFixed(2)}%
-                  </strong>
-                  {" — "}
-                  {r.wouldBeCompetitive
-                    ? "in range with MUDA's only two pact-era wins (38%, 43-44%) — could be competitive if the pact is genuine, not a token seat."
-                    : "below MUDA's historical winning range — likely lost, similar to most pact-era seats."}
-                </p>
+                <div className="text-sm mb-2">
+                  <p>
+                    Predicted vote share:{" "}
+                    <strong className="text-foreground">
+                      {r.predictedVoteShare.toFixed(2)}%
+                    </strong>
+                    {" — "}
+                    {r.wouldBeCompetitive
+                      ? mode === "pact"
+                        ? "in range with MUDA's only two pact-era wins (38%, 43-44%) — could be competitive if the pact is genuine, not a token seat."
+                        : "unusually high for a solo result — still well below any actual win, but relatively strong by solo standards."
+                      : mode === "pact"
+                        ? "below MUDA's historical winning range — likely lost, similar to most pact-era seats."
+                        : "in line with MUDA's typical solo-era result — likely low single digits, high risk of losing the deposit."}
+                  </p>
+                  {mode === "solo" && (
+                    <p className="text-xs text-amber-700 mt-1">
+                      ⚠ No solo-era seat has come close to winning — treat
+                      &quot;competitive&quot; as relative to other solo results,
+                      not as approaching a win.
+                    </p>
+                  )}
+                </div>
                 <p className="text-xs text-muted-foreground mb-1">
                   Nearest historical seats (lower distance = more similar
                   demographics to what you entered):
