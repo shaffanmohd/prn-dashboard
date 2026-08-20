@@ -32,13 +32,14 @@ export default function OverallSummary({
             Pact-backed seats averaged ~24% vote share (2 wins, low deposit-loss
             rate). Solo seats averaged low single digits to ~10%, with
             near-total deposit loss. Puteri Wangsa is the cleanest evidence —
-            the same seat went 44.4% (pact, won) → 6.8% (solo, lost deposit).{" "}
+            the same seat went 44.4% (pact, won) → 6.8% (solo, lost deposit).
+            See{" "}
             <button
               type="button"
               onClick={() => onNavigate("o2")}
               className="text-foreground font-semibold underline underline-offset-2 hover:opacity-70"
             >
-              See {getTabLabel("o2")} →
+              {getTabLabel("o2")} →
             </button>
           </p>
         </section>
@@ -50,13 +51,13 @@ export default function OverallSummary({
             near-zero correlation. Solo, a real pattern emerges: not narrowly
             &quot;young vs old,&quot; but roughly &quot;under-50 receptive, 61+
             resistant&quot; — visible in both the JHR SE-16 slate and Puteri
-            Wangsa&apos;s own before/after.{" "}
+            Wangsa&apos;s own before/after. See{" "}
             <button
               type="button"
               onClick={() => onNavigate("o3")}
               className="text-foreground font-semibold underline underline-offset-2 hover:opacity-70"
             >
-              See {getTabLabel("o3")} →
+              {getTabLabel("o3")} →
             </button>
           </p>
         </section>
@@ -70,13 +71,13 @@ export default function OverallSummary({
             <strong className="text-foreground">reverses</strong> (−0.53 with %
             Chinese, +0.54 with % Malay), suggesting the pact-era Chinese
             support was largely borrowed PH-coalition-transfer vote, not an
-            organic MUDA base.{" "}
+            organic MUDA base. See{" "}
             <button
               type="button"
               onClick={() => onNavigate("o4")}
               className="text-foreground font-semibold underline underline-offset-2 hover:opacity-70"
             >
-              See {getTabLabel("o4")} →
+              {getTabLabel("o4")} →
             </button>
           </p>
         </section>
@@ -101,8 +102,16 @@ export default function OverallSummary({
             <p className="text-muted-foreground pl-4 border-l-2 border-muted mb-3">
               The tool below doesn&apos;t weight every factor equally — it leans
               on whichever factor the data actually showed mattered most, per
-              mode.
+              mode. See{" "}
+              <button
+                type="button"
+                onClick={() => onNavigate("o5")}
+                className="text-foreground font-semibold underline underline-offset-2 hover:opacity-70"
+              >
+                {getTabLabel("o5")} →
+              </button>
             </p>
+
             <div className="pl-4 overflow-x-auto rounded-md border">
               <table className="w-full text-xs">
                 <thead>
