@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "PRN Johor Dashboard by Shaffan Mohd",
+  title: "MUDA Election Dashboard by Shaffan Mohd",
   description: "It is what it is",
 };
 
