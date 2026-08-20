@@ -10,12 +10,14 @@ import ObjectiveOne from "./components/ObjectiveOne";
 import ObjectiveTwo from "./components/ObjectiveTwo";
 import ObjectiveThree from "./components/ObjectiveThree";
 import ObjectiveFour from "./components/ObjectiveFour";
+import OverallSummary from "./components/OveralSummary";
 
 const TABS = [
-  { id: "o1", label: "01 · Pact vs Solo" },
-  { id: "o2", label: "02 · Youth Targeting" },
-  { id: "o3", label: "03 · Racial Shift" },
-  { id: "o4", label: "04 · GE16 / KL" },
+  { id: "o1", label: "01 · Overall Summary" },
+  { id: "o2", label: "02 · Pact vs Solo" },
+  { id: "o3", label: "03 · Youth Targeting" },
+  { id: "o4", label: "04 · Racial Shift" },
+  { id: "o5", label: "05 · GE16 / KL Predictor" },
 ] as const;
 
 export default function ResearchPage() {
@@ -60,13 +62,15 @@ export default function ResearchPage() {
             ))}
           </div>
 
-          {tab === "o1" && <ObjectiveOne />}
+          {tab === "o1" && <OverallSummary tabs={TABS} onNavigate={setTab} />}
 
-          {tab === "o2" && <ObjectiveTwo />}
+          {tab === "o2" && <ObjectiveOne />}
 
-          {tab === "o3" && <ObjectiveThree />}
+          {tab === "o3" && <ObjectiveTwo />}
 
-          {tab === "o4" && <ObjectiveFour />}
+          {tab === "o4" && <ObjectiveThree />}
+
+          {tab === "o5" && <ObjectiveFour />}
         </div>
       </main>
     </>
