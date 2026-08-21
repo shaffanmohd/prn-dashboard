@@ -109,7 +109,7 @@ export default function OverallSummary({
               depending on whether you&apos;re checking a pact scenario or a
               solo one.
             </p>
-            <div className="pl-4 overflow-x-auto rounded-md border">
+            <div className=" overflow-x-auto rounded-md border">
               <table className="w-full text-xs">
                 <thead>
                   <tr className="text-left text-muted-foreground border-b bg-muted/40">
