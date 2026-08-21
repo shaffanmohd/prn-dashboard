@@ -29,17 +29,17 @@ export default function OverallSummary({
         <section>
           <h3 className="font-semibold text-foreground mb-1.5">Vote share</h3>
           <p className="text-muted-foreground pl-4 border-l-2 border-muted">
-            Pact-backed seats averaged ~24% vote share (2 wins, low deposit-loss
-            rate). Solo seats averaged low single digits to ~10%, with
-            near-total deposit loss. Puteri Wangsa is the cleanest evidence —
-            the same seat went 44.4% (pact, won) → 6.8% (solo, lost deposit).
-            See{" "}
+            When MUDA had a pact with PH, they averaged about 24% of the vote
+            and won 2 seats. Running solo, they dropped to low single digits,
+            sometimes up to 10%, and lost their deposit almost every time. The
+            clearest proof is Puteri Wangsa — the exact same seat went from
+            44.4% (with a pact, won) to 6.8% (solo, lost the deposit).{" "}
             <button
               type="button"
               onClick={() => onNavigate("o2")}
               className="text-foreground font-semibold underline underline-offset-2 hover:opacity-70"
             >
-              {getTabLabel("o2")} →
+              See {getTabLabel("o2")} →
             </button>
           </p>
         </section>
@@ -47,17 +47,19 @@ export default function OverallSummary({
         <section>
           <h3 className="font-semibold text-foreground mb-1.5">Age</h3>
           <p className="text-muted-foreground pl-4 border-l-2 border-muted">
-            Under the pact, age barely predicted anything — every band sits
-            near-zero correlation. Solo, a real pattern emerges: not narrowly
-            &quot;young vs old,&quot; but roughly &quot;under-50 receptive, 61+
-            resistant&quot; — visible in both the JHR SE-16 slate and Puteri
-            Wangsa&apos;s own before/after. See{" "}
+            With a pact, a voter&apos;s age barely made any difference to how
+            MUDA did — young or old areas performed about the same. Once solo,
+            age actually started to matter: MUDA did better in areas with more
+            voters under 50, and consistently worse in areas with more voters
+            aged 61 and up. This shows up both across the recent Johor
+            by-elections and in Puteri Wangsa&apos;s own before/after
+            comparison.{" "}
             <button
               type="button"
               onClick={() => onNavigate("o3")}
               className="text-foreground font-semibold underline underline-offset-2 hover:opacity-70"
             >
-              {getTabLabel("o3")} →
+              See {getTabLabel("o3")} →
             </button>
           </p>
         </section>
@@ -65,19 +67,21 @@ export default function OverallSummary({
         <section>
           <h3 className="font-semibold text-foreground mb-1.5">Race</h3>
           <p className="text-muted-foreground pl-4 border-l-2 border-muted">
-            Under the pact, MUDA&apos;s vote was overwhelmingly a Chinese-voter
-            phenomenon (r ≈ +0.93 to +0.95 with % Chinese). Once solo, that
-            relationship weakens and — in Puteri Wangsa specifically —{" "}
-            <strong className="text-foreground">reverses</strong> (−0.53 with %
-            Chinese, +0.54 with % Malay), suggesting the pact-era Chinese
-            support was largely borrowed PH-coalition-transfer vote, not an
-            organic MUDA base. See{" "}
+            Under the pact, MUDA&apos;s votes came mostly from Chinese voters —
+            areas with more Chinese voters almost always gave MUDA a much higher
+            share (this held true 93-95% of the time). Once solo, that link got
+            weaker, and in Puteri Wangsa it actually{" "}
+            <strong className="text-foreground">flipped</strong> — Chinese areas
+            voted MUDA less, Malay areas voted MUDA slightly more. This suggests
+            MUDA&apos;s Chinese support under the pact wasn&apos;t really
+            &quot;theirs&quot; — it was borrowed from PH, and it left once the
+            pact did.{" "}
             <button
               type="button"
               onClick={() => onNavigate("o4")}
               className="text-foreground font-semibold underline underline-offset-2 hover:opacity-70"
             >
-              {getTabLabel("o4")} →
+              See {getTabLabel("o4")} →
             </button>
           </p>
         </section>
@@ -87,31 +91,24 @@ export default function OverallSummary({
             What this means for GE16
           </h3>
           <p className="text-muted-foreground pl-4 border-l-2 border-muted">
-            A genuine pact seat is worth far more than demographic targeting
-            alone. But if MUDA ends up contesting solo, the seats worth
-            prioritizing look different from the pact-era playbook — less about
-            Chinese-heavy composition, more about younger-skewing,
-            non-elderly-heavy areas. The predictor below reflects that split.
+            Getting a real pact is worth far more than picking the
+            &quot;right&quot; seat based on demographics alone. But if MUDA does
+            end up running solo, the seats worth going for look different from
+            the pact playbook — less about how many Chinese voters are there,
+            more about whether the area skews younger and has fewer elderly
+            voters. The predictor below reflects that.
           </p>
 
-          {/* Nested sub-section — explains/justifies the paragraph above */}
           <div className="pl-4 mt-4">
             <h4 className="font-medium text-foreground mb-1.5 text-[13px]">
-              Assumptions behind the GE16 predictor
+              How the GE16 predictor decides what matters
             </h4>
             <p className="text-muted-foreground pl-4 border-l-2 border-muted mb-3">
-              The tool below doesn&apos;t weight every factor equally — it leans
-              on whichever factor the data actually showed mattered most, per
-              mode. See{" "}
-              <button
-                type="button"
-                onClick={() => onNavigate("o5")}
-                className="text-foreground font-semibold underline underline-offset-2 hover:opacity-70"
-              >
-                {getTabLabel("o5")} →
-              </button>
+              The tool below doesn&apos;t treat race and age equally — it leans
+              harder on whichever factor actually predicted results best,
+              depending on whether you&apos;re checking a pact scenario or a
+              solo one.
             </p>
-
             <div className="pl-4 overflow-x-auto rounded-md border">
               <table className="w-full text-xs">
                 <thead>
@@ -132,10 +129,10 @@ export default function OverallSummary({
                     <td className="py-2 px-3 text-right">30%</td>
                     <td className="py-2 px-3 text-right">10%</td>
                     <td className="py-2 px-3 text-muted-foreground">
-                      % Chinese correlated with MUDA&apos;s vote share at r ≈
-                      +0.93 to +0.95 across every pact-era seat — by far the
-                      strongest signal found anywhere in this analysis. Age
-                      barely mattered under the pact, so it gets little weight.
+                      % Chinese was the strongest single predictor of how well
+                      MUDA did in every pact-era seat we have data for. Age made
+                      almost no difference under the pact, so it barely counts
+                      here.
                     </td>
                   </tr>
                   <tr className="border-b align-top">
@@ -146,9 +143,10 @@ export default function OverallSummary({
                     <td className="py-2 px-3 text-right">55%</td>
                     <td className="py-2 px-3 text-right">30%</td>
                     <td className="py-2 px-3 text-muted-foreground">
-                      Once solo, % Chinese stopped predicting well — in Puteri
-                      Wangsa it flipped negative (−0.53). % Malay and youth
-                      (18-30) became the more reliable signals instead.
+                      Once solo, % Chinese stopped being useful — in Puteri
+                      Wangsa it actually predicted the wrong direction. % Malay
+                      and youth turned out to matter more, so they&apos;re
+                      weighted higher here.
                     </td>
                   </tr>
                   <tr className="align-top">
@@ -159,20 +157,20 @@ export default function OverallSummary({
                     <td className="py-2 px-3 text-right">33%</td>
                     <td className="py-2 px-3 text-right">33%</td>
                     <td className="py-2 px-3 text-muted-foreground">
-                      A sanity check shown alongside the primary weighting. If
-                      it points to a very different seat, the predictor flags
-                      that disagreement as a reason to trust the result less.
+                      Shown as a second opinion next to the main result — it
+                      doesn&apos;t assume any one factor matters most. If it
+                      points to a totally different seat, that&apos;s a sign to
+                      trust the result less.
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <p className="text-xs text-muted-foreground pl-4 mt-2">
-              One more assumption worth stating plainly: the pact reference set
-              is 12 seats, the solo reference set is smaller — both are small
-              samples. This is an informed comparison against MUDA&apos;s actual
-              history, not a statistical forecast with real confidence
-              intervals.
+              Worth being upfront: this is only based on 12 pact seats and even
+              fewer solo seats — small numbers either way. Think of this as
+              &quot;here&apos;s what happened in the closest real seats we
+              have,&quot; not a confident forecast.
             </p>
           </div>
         </section>
